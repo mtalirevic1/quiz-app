@@ -5,18 +5,17 @@ import java.util.ArrayList;
 public class Kviz {
 
     private String naziv;
-    private String kategorija;
-    private ArrayList<String> pitanjaKviza;
-    private static ArrayList<String> mogucaPitanja=new ArrayList<>();
+    private Kategorija kategorija;
+    private ArrayList<Pitanje> pitanja;
 
-    public Kviz(String naziv, String kategorija, ArrayList<String> pitanjaKviza) {
+    public Kviz(String naziv, Kategorija kategorija, ArrayList<Pitanje> pitanja) {
         this.naziv = naziv;
         this.kategorija = kategorija;
-        this.pitanjaKviza = pitanjaKviza;
+        this.pitanja = pitanja;
     }
 
     public Kviz(){
-        pitanjaKviza=new ArrayList<>();
+        pitanja=new ArrayList<>();
     }
 
     public String getNaziv() {
@@ -27,35 +26,19 @@ public class Kviz {
         this.naziv = naziv;
     }
 
-    public String getKategorija() {
+    public Kategorija getKategorija() {
         return kategorija;
     }
 
-    public void setKategorija(String kategorija) {
+    public void setKategorija(Kategorija kategorija) {
         this.kategorija = kategorija;
     }
 
-    public ArrayList<String> getPitanjaKviza() {
-        return pitanjaKviza;
+    public ArrayList<Pitanje> getPitanja() {
+        return pitanja;
     }
 
-    public void setPitanjaKviza(ArrayList<String> pitanjaKviza) {
-        this.pitanjaKviza = pitanjaKviza;
-    }
-
-    public static ArrayList<String> getMogucaPitanja() {
-        return mogucaPitanja;
-    }
-
-    public static void setMogucaPitanja(ArrayList<String> mogucaPitanja) {
-        Kviz.mogucaPitanja = mogucaPitanja;
-    }
-
-    public static void dodajMogucePitanje(String pitanje ){
-        mogucaPitanja.add(pitanje);
-    }
-
-    public void dodajPitanjeKviza(String pitanje ){
-        pitanjaKviza.add(pitanje);
+    public void setPitanja(ArrayList<Pitanje> pitanja) {
+        this.pitanja = pitanja;
     }
 }
