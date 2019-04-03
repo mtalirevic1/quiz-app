@@ -41,4 +41,8 @@ public class Kviz {
     public void setPitanja(ArrayList<Pitanje> pitanja) {
         this.pitanja = pitanja;
     }
+
+    public void dodajPitanje(Pitanje pitanje){
+        pitanja.add(pitanje);
+    }
 }
