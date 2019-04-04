@@ -1,9 +1,10 @@
 package ba.unsa.etf.rma.klase;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Pitanje {
+public class Pitanje implements Serializable {
 
     private String naziv;
     private String textPitanja;

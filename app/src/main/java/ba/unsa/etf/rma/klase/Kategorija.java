@@ -1,6 +1,8 @@
 package ba.unsa.etf.rma.klase;
 
-public class Kategorija {
+import java.io.Serializable;
+
+public class Kategorija implements Serializable {
     private String naziv;
     private String id;
 
