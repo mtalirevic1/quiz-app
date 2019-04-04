@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">RMA-projekat</string>
     <string name="spPostojeceKategorije">Kategorije</string>
+    <string name="etNaziv">Naziv kviza - INPUT</string>
+    <string name="moguca_pitanja">Moguca pitanja</string>
+    <string name="pitanja_u_kvizu">Pitanja u kvizu</string>
 </resources>
