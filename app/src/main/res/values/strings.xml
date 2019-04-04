@@ -4,4 +4,5 @@
     <string name="etNaziv">Naziv kviza - INPUT</string>
     <string name="moguca_pitanja">Moguca pitanja</string>
     <string name="pitanja_u_kvizu">Pitanja u kvizu</string>
+    <string name="dodaj_kviz">Dodaj Kviz</string>
 </resources>

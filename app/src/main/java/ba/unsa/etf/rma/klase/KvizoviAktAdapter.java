@@ -80,7 +80,7 @@ public class KvizoviAktAdapter extends BaseAdapter {
         if(position!=data.size()-1) {
             holder.text.setText(kviz.getNaziv());
             holder.image.setImageResource(res.getIdentifier("plavikrug", "drawable", "ba.unsa.etf.rma"));
-        }
+    }
         else{
             holder.text.setText("Dodaj Kviz");
             holder.image.setImageResource(res.getIdentifier("zeleniplus", "drawable", "ba.unsa.etf.rma"));
