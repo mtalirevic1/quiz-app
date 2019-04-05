@@ -46,4 +46,9 @@ public class Kviz implements Serializable {
     public void dodajPitanje(Pitanje pitanje){
         pitanja.add(pitanje);
     }
+
+    @Override
+    public String toString(){
+        return naziv;
+    }
 }

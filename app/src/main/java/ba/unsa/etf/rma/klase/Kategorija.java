@@ -31,4 +31,9 @@ public class Kategorija implements Serializable {
         this.id = id;
     }
 
+    @Override
+    public String toString(){
+        return naziv;
+    }
+
 }
