@@ -13,14 +13,14 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ba.unsa.etf.rma.R;
-import ba.unsa.etf.rma.aktivnosti.KvizoviAkt;
+import ba.unsa.etf.rma.aktivnosti.DodajKvizAkt;
 
 public class DodajKvizAdapter extends BaseAdapter {
     private Activity activity;
     private ArrayList data;
     private static LayoutInflater inflater = null;
     public Resources res;
-    Kviz kviz = null;
+    Pitanje pitanje = null;
 
     public DodajKvizAdapter(Activity activity, ArrayList podaci, Resources res) {
         this.activity = activity;
@@ -72,11 +72,11 @@ public class DodajKvizAdapter extends BaseAdapter {
             holder = (DodajKvizAdapter.ViewHolder) view.getTag();
         }
 
-        kviz = null;
-        kviz = (Kviz) data.get(position);
+        pitanje = null;
+        pitanje = (Pitanje) data.get(position);
 
         if(position!=data.size()-1) {
-            holder.text.setText(kviz.getNaziv());
+            holder.text.setText(pitanje.getTextPitanja());
             holder.image.setImageResource(res.getIdentifier("plavikrug", "drawable", "ba.unsa.etf.rma"));
         }
         else{
@@ -98,7 +98,7 @@ public class DodajKvizAdapter extends BaseAdapter {
 
         @Override
         public void onClick(View arg0) {
-            KvizoviAkt sct = (KvizoviAkt) activity;
+            DodajKvizAkt sct = (DodajKvizAkt) activity;
             sct.onItemClick(mPosition);
         }
     }
