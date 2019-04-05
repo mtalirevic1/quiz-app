@@ -59,4 +59,9 @@ public class Pitanje implements Serializable {
         Collections.shuffle(random);
         return random;
     }
+
+    @Override
+    public String toString(){
+        return textPitanja;
+    }
 }
