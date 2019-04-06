@@ -31,8 +31,6 @@ public class PlusListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        if (data.size() <= 0)
-            return 1;
         return data.size();
     }
 

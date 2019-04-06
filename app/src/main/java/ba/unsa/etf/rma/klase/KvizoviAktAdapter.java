@@ -33,8 +33,6 @@ public class KvizoviAktAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        if (data.size() <= 0)
-            return 1;
         return data.size();
     }
 
@@ -77,11 +75,10 @@ public class KvizoviAktAdapter extends BaseAdapter {
         kviz = null;
         kviz = (Kviz) data.get(position);
 
-        if(position!=data.size()-1) {
+        if (position != data.size() - 1) {
             holder.text.setText(kviz.getNaziv());
             holder.image.setImageResource(res.getIdentifier("plavikrug", "drawable", "ba.unsa.etf.rma"));
-    }
-        else{
+        } else {
             holder.text.setText("Dodaj Kviz");
             holder.image.setImageResource(res.getIdentifier("zeleniplus", "drawable", "ba.unsa.etf.rma"));
         }

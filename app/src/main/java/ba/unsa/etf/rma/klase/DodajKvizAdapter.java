@@ -75,11 +75,10 @@ public class DodajKvizAdapter extends BaseAdapter {
         pitanje = null;
         pitanje = (Pitanje) data.get(position);
 
-        if(position!=data.size()-1) {
+        if (position != data.size() - 1) {
             holder.text.setText(pitanje.getTextPitanja());
             holder.image.setImageResource(res.getIdentifier("plavikrug", "drawable", "ba.unsa.etf.rma"));
-        }
-        else{
+        } else {
             holder.text.setText("Dodaj Pitanje");
             holder.image.setImageResource(res.getIdentifier("zeleniplus", "drawable", "ba.unsa.etf.rma"));
         }
