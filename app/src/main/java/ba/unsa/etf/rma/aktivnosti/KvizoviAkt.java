@@ -39,34 +39,34 @@ public class KvizoviAkt extends AppCompatActivity {
 
         lvKvizovi = (ListView) findViewById(R.id.lvKvizovi);
 
-        kategorije=new ArrayList<>();
-        filtriranaLista=new ArrayList<>();
-        spPostojeceKategorije=(Spinner) findViewById(R.id.spPostojeceKategorije);
-        adapterSp = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,kategorije);
+        kategorije = new ArrayList<>();
+        filtriranaLista = new ArrayList<>();
+        spPostojeceKategorije = (Spinner) findViewById(R.id.spPostojeceKategorije);
+        adapterSp = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, kategorije);
         adapterSp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spPostojeceKategorije.setAdapter(adapterSp);
 
-        kategorije.add(new Kategorija("Svi","-1"));
+        kategorije.add(new Kategorija("Svi", "-1"));
         adapterSp.notifyDataSetChanged();
 
-        Resources res=getResources();
-        unosi=new ArrayList<>();
-        adapter =new KvizoviAktAdapter(this,filtriranaLista,res);
+        Resources res = getResources();
+        unosi = new ArrayList<>();
+        adapter = new KvizoviAktAdapter(this, filtriranaLista, res);
 
         spPostojeceKategorije.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                Kategorija kategorija= kategorije.get(position);
+                Kategorija kategorija = kategorije.get(position);
                 resetujListu(filtriranaLista);
-                if(kategorija.getNaziv().equals("Svi")){
-                    for(Kviz k: unosi){
-                        filtriranaLista.add(filtriranaLista.size()-1,k);
+                if (kategorija.getNaziv().equals("Svi")) {
+                    for (Kviz k : unosi) {
+                        filtriranaLista.add(filtriranaLista.size() - 1, k);
                         adapter.notifyDataSetChanged();
                     }
-                } else{
-                    for(Kviz k: unosi){
-                        if(k.getKategorija().getNaziv().equals(kategorija.getNaziv())){
-                            filtriranaLista.add(filtriranaLista.size()-1,k);
+                } else {
+                    for (Kviz k : unosi) {
+                        if (k.getKategorija().getNaziv().equals(kategorija.getNaziv())) {
+                            filtriranaLista.add(filtriranaLista.size() - 1, k);
                             adapter.notifyDataSetChanged();
                         }
                     }
@@ -84,55 +84,89 @@ public class KvizoviAkt extends AppCompatActivity {
         setData();
     }
 
-    public void resetujListu(ArrayList<Kviz> lista)
-    {
-        int i=0;
-        while(i!=lista.size()-1){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+
+            if (resultCode == RESULT_OK) {
+
+                Bundle bundle = data.getExtras();
+                Kviz kviz = (Kviz) bundle.getParcelable("kviz");
+                Integer pos = bundle.getInt("p");
+                Boolean novi = bundle.getBoolean("novi");
+                if (!novi) {
+                    Kviz k = filtriranaLista.get(pos);
+                    unosi.remove(k);
+                    filtriranaLista.remove(k);
+                }
+                unosi.add(kviz);
+                Kategorija k = (Kategorija) spPostojeceKategorije.getSelectedItem();
+                if (k.getNaziv().equals(kviz.getKategorija().getNaziv()) || k.getNaziv().equals("Svi")) {
+                    filtriranaLista.add(filtriranaLista.size() - 1, kviz);
+                }
+                adapter.notifyDataSetChanged();
+
+            }
+            if (resultCode == RESULT_CANCELED) {
+
+            }
+        }
+    }
+
+
+    public void resetujListu(ArrayList<Kviz> lista) {
+        int i = 0;
+        while (i != lista.size() - 1) {
             lista.remove(i);
         }
     }
 
-    public void onItemClick(int mPosition)
-    {
-        Intent intent=new Intent(KvizoviAkt.this, DodajKvizAkt.class);
-        intent.putExtra("kategorije",kategorije);
-        if(mPosition!=filtriranaLista.size()-1){
+    public void onItemClick(int mPosition) {
+        Intent intent = new Intent(KvizoviAkt.this, DodajKvizAkt.class);
+
+        intent.putExtra("kategorije", kategorije);
+        Integer pos = mPosition;
+        Boolean novi = false;
+        intent.putExtra("p", pos);
+        if (mPosition != filtriranaLista.size() - 1) {
             //updateuj kviz
-            Kviz temp = ( Kviz ) filtriranaLista.get(mPosition);
-            intent.putExtra("kviz",temp);
-        }
-        else{
+            Kviz temp = (Kviz) filtriranaLista.get(mPosition);
+            intent.putExtra("kviz", new Kviz(temp.getNaziv(), temp.getKategorija(), temp.getPitanja()));
+            novi = false;
+        } else {
             //dodaj kviz
-            intent.putExtra("kviz",new Kviz("",null,null));
+            intent.putExtra("kviz", new Kviz("", new Kategorija("", ""), new ArrayList<Pitanje>()));
+            novi = true;
         }
-        startActivity(intent);
+        intent.putExtra("novi", novi);
+        startActivityForResult(intent, 1);
     }
 
-    public void setData()
-    {
-        odgovori=new ArrayList<>();
-        odgovori.add("da"); odgovori.add("ne");
+    public void setData() {
+        odgovori = new ArrayList<>();
+        odgovori.add("da");
+        odgovori.add("ne");
 
-        pitanja=new ArrayList<>();
-        pitanja.add(new Pitanje("P1","Sta je sta", odgovori,"da"));
-        pitanja.add(new Pitanje("P2","Sta je nesto", odgovori,"ne"));
-        pitanja.add(new Pitanje("P3","Sta je ista", odgovori,"da"));
+        pitanja = new ArrayList<>();
+        pitanja.add(new Pitanje("P1", "Sta je sta", odgovori, "da"));
+        pitanja.add(new Pitanje("P2", "Sta je nesto", odgovori, "ne"));
+        pitanja.add(new Pitanje("P3", "Sta je ista", odgovori, "da"));
 
 
-        filtriranaLista.add(new Kviz("Dodaj Kviz",new Kategorija("Nista","0"),new ArrayList<Pitanje>(pitanja)));
+        filtriranaLista.add(new Kviz("Dodaj Kviz", new Kategorija("Nista", "0"), new ArrayList<Pitanje>(pitanja)));
 
-        unosi.add(0,new Kviz("Kviz 1",new Kategorija("Neka","1"),new ArrayList<Pitanje>(pitanja)));
-        filtriranaLista.add(0,new Kviz("Kviz 1",new Kategorija("Neka","1"),new ArrayList<Pitanje>(pitanja)));
+        unosi.add(0, new Kviz("Kviz 1", new Kategorija("Neka", "1"), new ArrayList<Pitanje>(pitanja)));
+        filtriranaLista.add(0, new Kviz("Kviz 1", new Kategorija("Neka", "1"), new ArrayList<Pitanje>(pitanja)));
 
-        unosi.add(0,new Kviz("Kviz 2",new Kategorija("Neka2","2"),null));
-        filtriranaLista.add(0,new Kviz("Kviz 2",new Kategorija("Neka2","2"),new ArrayList<Pitanje>(pitanja)));
+        unosi.add(0, new Kviz("Kviz 2", new Kategorija("Neka2", "2"), new ArrayList<Pitanje>(pitanja)));
+        filtriranaLista.add(0, new Kviz("Kviz 2", new Kategorija("Neka2", "2"), new ArrayList<Pitanje>(pitanja)));
 
-        unosi.add(0,new Kviz("Kviz 3",new Kategorija("Neka3","3"),null));
-        filtriranaLista.add(0,new Kviz("Kviz 3",new Kategorija("Neka3","3"),new ArrayList<Pitanje>(pitanja)));
+        unosi.add(0, new Kviz("Kviz 3", new Kategorija("Neka3", "3"), new ArrayList<Pitanje>(pitanja)));
+        filtriranaLista.add(0, new Kviz("Kviz 3", new Kategorija("Neka3", "3"), new ArrayList<Pitanje>(pitanja)));
 
-        kategorije.add(new Kategorija("Neka","Neka"));
-        kategorije.add(new Kategorija("Neka2","Neka2"));
-        kategorije.add(new Kategorija("Neka3","Neka3"));
+        kategorije.add(new Kategorija("Neka", "Neka"));
+        kategorije.add(new Kategorija("Neka2", "Neka2"));
+        kategorije.add(new Kategorija("Neka3", "Neka3"));
 
         adapter.notifyDataSetChanged();
         adapterSp.notifyDataSetChanged();
