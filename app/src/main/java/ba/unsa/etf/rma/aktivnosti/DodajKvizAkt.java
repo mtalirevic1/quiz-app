@@ -43,6 +43,7 @@ public class DodajKvizAkt extends AppCompatActivity {
     private Integer pos;
     private Kviz kviz;
     private ArrayList<String> odg;
+    private ArrayList<Kviz> kvizovi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +64,7 @@ public class DodajKvizAkt extends AppCompatActivity {
         pitanjaText = (TextView) findViewById(R.id.pitanjaText);
 
         Resources res = getResources();
+        kvizovi=bundle.getParcelableArrayList("kvizovi");
         kategorije = bundle.getParcelableArrayList("kategorije");
 
         for (int i = 0; i < kategorije.size(); i++) {
@@ -98,7 +100,6 @@ public class DodajKvizAkt extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 Kategorija kategorija = kategorije.get(position);
                 if (kategorija.getNaziv().equals("Dodaj kategoriju")) {
-                    //dodaj kategoriju todo
                     spKategorije.setSelection(0);
                     Intent intent = new Intent(DodajKvizAkt.this, DodajKategorijuAkt.class);
                     intent.putExtra("kategorije",kategorije);
@@ -133,7 +134,7 @@ public class DodajKvizAkt extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                if (!imaIme()) {
+                if (!imaIme() || imaKviz()) {
                     etNaziv.setBackgroundColor(getResources().getColor(R.color.red));
                 } else{
                     etNaziv.setBackgroundColor(getResources().getColor(R.color.colorLabel1));
@@ -144,7 +145,7 @@ public class DodajKvizAkt extends AppCompatActivity {
                     pitanjaText.setTextColor(getResources().getColor(R.color.colorLabel1));
                 }
 
-                if (imaPitanja() && imaIme()) {
+                if (imaPitanja() && imaIme() && !imaKviz()) {
                     kviz.setNaziv(etNaziv.getText().toString());
                     kviz.setKategorija((Kategorija) spKategorije.getSelectedItem());
                     kviz.setPitanja(pitanjaKviza);
@@ -159,6 +160,16 @@ public class DodajKvizAkt extends AppCompatActivity {
         });
 
         setData();
+    }
+
+    public boolean imaKviz(){
+        String s=etNaziv.getText().toString();
+        for(Kviz k: kvizovi){
+            if(k.getNaziv().equals(s)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean imaIme() {

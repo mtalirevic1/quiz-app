@@ -9,7 +9,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -155,6 +154,7 @@ public class KvizoviAkt extends AppCompatActivity {
             novi = true;
         }
         intent.putExtra("novi", novi);
+        intent.putExtra("kvizovi",unosi);
         startActivityForResult(intent, 1);
     }
 
