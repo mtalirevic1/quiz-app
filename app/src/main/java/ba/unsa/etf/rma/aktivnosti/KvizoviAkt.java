@@ -40,6 +40,8 @@ public class KvizoviAkt extends AppCompatActivity {
 
         kategorije = new ArrayList<>();
         filtriranaLista = new ArrayList<>();
+        pitanja=new ArrayList<>();
+        filtriranaLista.add(new Kviz("Dodaj Kviz", new Kategorija("Nista", ""), new ArrayList<Pitanje>(pitanja)));
         spPostojeceKategorije = (Spinner) findViewById(R.id.spPostojeceKategorije);
         adapterSp = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, kategorije);
         adapterSp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -135,12 +137,15 @@ public class KvizoviAkt extends AppCompatActivity {
 
 
     public void resetujListu(ArrayList<Kviz> lista) {
-        int i = 0;
-        while (i != lista.size() - 1) {
-            if(lista.size()-1==-1){
-                break;
+       /* while (lista.size()>1) {
+            lista.remove(0);
+        }*/
+
+        for(int i=0;i<lista.size();i++){
+            if(!lista.get(i).getNaziv().equals("Dodaj Kviz")){
+                lista.remove(i);
+                i--;
             }
-            lista.remove(i);
         }
     }
 
@@ -176,8 +181,6 @@ public class KvizoviAkt extends AppCompatActivity {
         pitanja.add(new Pitanje("P2", "Sta je nesto", odgovori, "ne"));
         pitanja.add(new Pitanje("P3", "Sta je ista", odgovori, "da"));
 
-
-        filtriranaLista.add(new Kviz("Dodaj Kviz", new Kategorija("Nista", ""), new ArrayList<Pitanje>(pitanja)));
 
         unosi.add(0, new Kviz("Kviz 1", new Kategorija("Neka", ""), new ArrayList<Pitanje>(pitanja)));
         filtriranaLista.add(0, new Kviz("Kviz 1", new Kategorija("Neka", ""), new ArrayList<Pitanje>(pitanja)));
