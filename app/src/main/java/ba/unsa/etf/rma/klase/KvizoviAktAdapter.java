@@ -7,17 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.maltaisn.icondialog.Icon;
-import com.maltaisn.icondialog.IconHelper;
 import com.maltaisn.icondialog.IconView;
 
 import java.util.ArrayList;
 
 import ba.unsa.etf.rma.R;
-import ba.unsa.etf.rma.aktivnosti.DodajKategorijuAkt;
 import ba.unsa.etf.rma.aktivnosti.KvizoviAkt;
 
 public class KvizoviAktAdapter extends BaseAdapter {
@@ -84,13 +80,12 @@ public class KvizoviAktAdapter extends BaseAdapter {
             Integer id;
             try {
                 id = Integer.parseInt(kviz.getKategorija().getId());
-            } catch (NumberFormatException e){
-               id=-1;
+            } catch (NumberFormatException e) {
+                id = -1;
             }
-            if(id.equals(-1)) {
+            if (id.equals(-1)) {
                 holder.image.setImageResource(res.getIdentifier("plavikrug", "drawable", "ba.unsa.etf.rma"));
-            }
-            else{
+            } else {
                 holder.image.setIcon(id);
             }
         } else {
