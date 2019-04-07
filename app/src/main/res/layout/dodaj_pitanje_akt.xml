@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".aktivnosti.DodajPitanjeAkt">
+
+    <EditText
+        android:id="@+id/etNaziv"
+        android:layout_width="366dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="42dp"
+        android:background="@drawable/edittextbackground"
+        android:inputType="text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/odgovoriText"
+        android:layout_width="154dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="128dp"
+        android:layout_marginTop="102dp"
+        android:text="@string/odgovori"
+        android:textAlignment="center"
+        android:textColor="@color/colorLabel1"
+        android:textSize="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ListView
+        android:id="@+id/lvOdgovori"
+        android:layout_width="match_parent"
+        android:layout_height="122dp"
+        android:layout_marginTop="146dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/etOdgovor"
+        android:layout_width="366dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="294dp"
+        android:background="@drawable/edittextbackground"
+        android:inputType="text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnDodajOdgovor"
+        android:layout_width="363dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="23dp"
+        android:layout_marginTop="344dp"
+        android:background="@drawable/buttonshape"
+        android:fontFamily="sans-serif"
+        android:text="@string/dodaj"
+        android:textAllCaps="false"
+        android:textColor="@color/blue"
+        android:textSize="18dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnDodajTacan"
+        android:layout_width="363dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="413dp"
+        android:background="@drawable/buttonshape"
+        android:fontFamily="sans-serif"
+        android:text="@string/dodaj_tacan"
+        android:textAllCaps="false"
+        android:textColor="@color/colorLabel1"
+        android:textSize="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnDodajPitanje"
+        android:layout_width="300dp"
+        android:layout_height="69dp"
+        android:layout_marginStart="55dp"
+        android:layout_marginTop="505dp"
+        android:backgroundTint="@color/blue"
+        android:fontFamily="sans-serif"
+        android:text="@string/spasi_pitanje"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

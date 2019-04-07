@@ -2,7 +2,13 @@
     <string name="app_name">RMA-projekat</string>
     <string name="spPostojeceKategorije">Kategorije</string>
     <string name="etNaziv">Naziv kviza - INPUT</string>
+    <string name="etNazivPitanja">Naziv Pitanja - INPUT</string>
     <string name="moguca_pitanja">Moguca pitanja</string>
     <string name="pitanja_u_kvizu">Pitanja u kvizu</string>
     <string name="dodaj_kviz">Dodaj Kviz</string>
+    <string name="dodaj">Dodaj</string>
+    <string name="dodaj_tacan">Dodaj tacan</string>
+    <string name="spasi_pitanje">Spasi pitanje</string>
+    <string name="odgovori">Odgovori</string>
+    <string name="odgovor">Odgovor</string>
 </resources>

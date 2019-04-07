@@ -132,9 +132,13 @@ public class DodajKvizAkt extends AppCompatActivity {
             public void onClick(View view) {
                 if (!imaIme()) {
                     etNaziv.setBackgroundColor(getResources().getColor(R.color.red));
+                } else{
+                    etNaziv.setBackgroundColor(getResources().getColor(R.color.colorLabel1));
                 }
                 if (!imaPitanja()) {
                     pitanjaText.setTextColor(getResources().getColor(R.color.red));
+                } else {
+                    pitanjaText.setTextColor(getResources().getColor(R.color.colorLabel1));
                 }
 
                 if (imaPitanja() && imaIme()) {
@@ -175,12 +179,27 @@ public class DodajKvizAkt extends AppCompatActivity {
             adapterMoguca.notifyDataSetChanged();
             adapter.notifyDataSetChanged();
         } else {
-           /* Intent intent=new Intent(DodajKvizAkt.this, DodajKvizAkt.class);
-            intent.putExtra("kategorije",kategorije);
-            //DODAJ pitanje todo
-            startActivity(intent);*/
+            Intent intent = new Intent(DodajKvizAkt.this, DodajPitanjeAkt.class);
+            startActivityForResult(intent, 2);
         }
 
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 2) {
+
+            if (resultCode == RESULT_OK) {
+
+                Bundle bundle = data.getExtras();
+                Pitanje pitanje=bundle.getParcelable("pitanje");
+                pitanjaKviza.add(pitanjaKviza.size()-1,pitanje);
+                adapter.notifyDataSetChanged();
+            }
+            if (resultCode == RESULT_CANCELED) {
+
+            }
+        }
     }
 
     public void onMoguceClick(int mPosition) {
