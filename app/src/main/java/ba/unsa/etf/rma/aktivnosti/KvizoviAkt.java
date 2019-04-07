@@ -137,6 +137,9 @@ public class KvizoviAkt extends AppCompatActivity {
     public void resetujListu(ArrayList<Kviz> lista) {
         int i = 0;
         while (i != lista.size() - 1) {
+            if(lista.size()-1==-1){
+                break;
+            }
             lista.remove(i);
         }
     }
