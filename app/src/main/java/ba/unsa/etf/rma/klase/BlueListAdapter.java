@@ -13,7 +13,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ba.unsa.etf.rma.R;
-import ba.unsa.etf.rma.aktivnosti.DodajKvizAkt;
 import ba.unsa.etf.rma.aktivnosti.DodajPitanjeAkt;
 
 public class BlueListAdapter extends BaseAdapter {
@@ -22,7 +21,7 @@ public class BlueListAdapter extends BaseAdapter {
     private static LayoutInflater inflater = null;
     public Resources res;
     String pitanje = null;
-    String tacan="";
+    String tacan = "";
 
     public BlueListAdapter(Activity activity, ArrayList podaci, Resources res) {
         this.activity = activity;
@@ -31,11 +30,11 @@ public class BlueListAdapter extends BaseAdapter {
         inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public void setTacan(String t){
-        tacan=t;
+    public void setTacan(String t) {
+        tacan = t;
     }
 
-    public String getTacan(){
+    public String getTacan() {
         return tacan;
     }
 
@@ -81,14 +80,14 @@ public class BlueListAdapter extends BaseAdapter {
         }
 
         pitanje = null;
-        pitanje =(String) data.get(position);
+        pitanje = (String) data.get(position);
 
         holder.text.setText(pitanje);
         holder.image.setImageResource(res.getIdentifier("plavikrug", "drawable", "ba.unsa.etf.rma"));
-        if(tacan.equals(pitanje)) holder.text.setTextColor(res.getColor(R.color.colorLabel1));
+        if (tacan.equals(pitanje)) holder.text.setTextColor(res.getColor(R.color.colorLabel1));
         else holder.text.setTextColor(res.getColor(R.color.black));
 
-       view.setOnClickListener(new BlueListAdapter.OnItemClickListener(position));
+        view.setOnClickListener(new BlueListAdapter.OnItemClickListener(position));
 
         return view;
     }
