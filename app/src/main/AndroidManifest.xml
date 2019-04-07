@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".aktivnosti.DodajPitanjeAkt"></activity>
+        <activity android:name=".aktivnosti.DodajKategorijuAkt"></activity>
+        <activity android:name=".aktivnosti.DodajPitanjeAkt" />
         <activity android:name=".aktivnosti.KvizoviAkt">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
