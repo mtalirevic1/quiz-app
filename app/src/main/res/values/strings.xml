@@ -11,5 +11,8 @@
     <string name="spasi_pitanje">Spasi pitanje</string>
     <string name="odgovori">Odgovori</string>
     <string name="odgovor">Odgovor</string>
-    <string name="ikona">Ikona</string>
+    <string name="ikona">  Ikona</string>
+    <string name="spasi_kategoriju">Spasi Kategoriju</string>
+    <string name="dodaj_ikonu">Dodaj Ikonu</string>
+    <string name="naziv_kategorije">  Naziv kategorije</string>
 </resources>

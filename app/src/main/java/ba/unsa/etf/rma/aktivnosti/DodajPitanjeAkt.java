@@ -61,7 +61,7 @@ public class DodajPitanjeAkt extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String s=etOdgovor.getText().toString();
-                if(!s.equals("")){
+                if(!s.equals("") && !imaOdgovor(s)){
                     odgovori.add(s);
                     adapterListe.notifyDataSetChanged();
                 }
@@ -72,7 +72,7 @@ public class DodajPitanjeAkt extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String s=etOdgovor.getText().toString();
-                if(!s.equals("") && tacan.equals("")){
+                if(!s.equals("") && tacan.equals("") && !imaOdgovor(s)){
                     odgovori.add(s);
                     tacan=s;
                     adapterListe.setTacan(s);
@@ -111,6 +111,13 @@ public class DodajPitanjeAkt extends AppCompatActivity {
     public Boolean imaOdgovora(){
         if(odgovori.size()<=0) return false;
         return true;
+    }
+
+    public Boolean imaOdgovor(String s){
+        for(String odg: odgovori){
+            if(odg.equals(s)) return true;
+        }
+        return false;
     }
 
     public Boolean imaNaziv(){

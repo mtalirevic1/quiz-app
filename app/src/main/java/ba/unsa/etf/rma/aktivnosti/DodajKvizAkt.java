@@ -15,6 +15,8 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.maltaisn.icondialog.Icon;
+
 import java.util.ArrayList;
 
 import ba.unsa.etf.rma.R;
@@ -64,7 +66,7 @@ public class DodajKvizAkt extends AppCompatActivity {
         kategorije = bundle.getParcelableArrayList("kategorije");
 
         for (int i = 0; i < kategorije.size(); i++) {
-            if (kategorije.get(i).getNaziv().equals("Svi")) {
+            if (kategorije.get(i).getNaziv().equals("Svi") || kategorije.get(i).getNaziv().equals("Dodaj kategoriju")) {
                 kategorije.remove(i);
                 break;
             }
@@ -98,6 +100,10 @@ public class DodajKvizAkt extends AppCompatActivity {
                 if (kategorija.getNaziv().equals("Dodaj kategoriju")) {
                     //dodaj kategoriju todo
                     spKategorije.setSelection(0);
+                    Intent intent = new Intent(DodajKvizAkt.this, DodajKategorijuAkt.class);
+                    intent.putExtra("kategorije",kategorije);
+                    startActivityForResult(intent, 3);
+
                 } else {
                     kviz.setKategorija(kategorija);
                 }
@@ -196,6 +202,13 @@ public class DodajKvizAkt extends AppCompatActivity {
             if (resultCode == RESULT_CANCELED) {
 
             }
+        } else if(requestCode==3){
+            Bundle bundle=data.getExtras();
+            Integer id= bundle.getInt("ikona");
+            String kat=bundle.getString("kategorija");
+            kategorije.add(kategorije.size()-1,new Kategorija(kat,id.toString()));
+            spKategorije.setSelection(kategorije.size()-2);
+            adapterSp.notifyDataSetChanged();
         }
     }
 

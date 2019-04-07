@@ -94,6 +94,13 @@ public class KvizoviAkt extends AppCompatActivity {
                 Kviz kviz = (Kviz) bundle.getParcelable("kviz");
                 Integer pos = bundle.getInt("p");
                 Boolean novi = bundle.getBoolean("novi");
+
+                Kategorija kategorija=kviz.getKategorija();
+
+                if(!imaKategorija(kategorija)){
+                    kategorije.add(kategorija);
+                }
+
                 if (!novi) {
                     Kviz k = filtriranaLista.get(pos);
                     unosi.remove(k);
@@ -111,6 +118,15 @@ public class KvizoviAkt extends AppCompatActivity {
 
             }
         }
+    }
+
+    public Boolean imaKategorija(Kategorija kategorija){
+        for(Kategorija k: kategorije){
+            if(k.getNaziv().equals(kategorija.getNaziv())){
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -153,16 +169,16 @@ public class KvizoviAkt extends AppCompatActivity {
         pitanja.add(new Pitanje("P3", "Sta je ista", odgovori, "da"));
 
 
-        filtriranaLista.add(new Kviz("Dodaj Kviz", new Kategorija("Nista", "0"), new ArrayList<Pitanje>(pitanja)));
+        filtriranaLista.add(new Kviz("Dodaj Kviz", new Kategorija("Nista", ""), new ArrayList<Pitanje>(pitanja)));
 
-        unosi.add(0, new Kviz("Kviz 1", new Kategorija("Neka", "1"), new ArrayList<Pitanje>(pitanja)));
-        filtriranaLista.add(0, new Kviz("Kviz 1", new Kategorija("Neka", "1"), new ArrayList<Pitanje>(pitanja)));
+        unosi.add(0, new Kviz("Kviz 1", new Kategorija("Neka", ""), new ArrayList<Pitanje>(pitanja)));
+        filtriranaLista.add(0, new Kviz("Kviz 1", new Kategorija("Neka", ""), new ArrayList<Pitanje>(pitanja)));
 
-        unosi.add(0, new Kviz("Kviz 2", new Kategorija("Neka2", "2"), new ArrayList<Pitanje>(pitanja)));
-        filtriranaLista.add(0, new Kviz("Kviz 2", new Kategorija("Neka2", "2"), new ArrayList<Pitanje>(pitanja)));
+        unosi.add(0, new Kviz("Kviz 2", new Kategorija("Neka2", ""), new ArrayList<Pitanje>(pitanja)));
+        filtriranaLista.add(0, new Kviz("Kviz 2", new Kategorija("Neka2", ""), new ArrayList<Pitanje>(pitanja)));
 
-        unosi.add(0, new Kviz("Kviz 3", new Kategorija("Neka3", "3"), new ArrayList<Pitanje>(pitanja)));
-        filtriranaLista.add(0, new Kviz("Kviz 3", new Kategorija("Neka3", "3"), new ArrayList<Pitanje>(pitanja)));
+        unosi.add(0, new Kviz("Kviz 3", new Kategorija("Neka3", ""), new ArrayList<Pitanje>(pitanja)));
+        filtriranaLista.add(0, new Kviz("Kviz 3", new Kategorija("Neka3", ""), new ArrayList<Pitanje>(pitanja)));
 
         kategorije.add(new Kategorija("Neka", "Neka"));
         kategorije.add(new Kategorija("Neka2", "Neka2"));
