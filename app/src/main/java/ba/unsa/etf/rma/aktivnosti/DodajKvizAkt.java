@@ -3,9 +3,7 @@ package ba.unsa.etf.rma.aktivnosti;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -14,8 +12,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-import com.maltaisn.icondialog.Icon;
 
 import java.util.ArrayList;
 
@@ -64,7 +60,7 @@ public class DodajKvizAkt extends AppCompatActivity {
         pitanjaText = (TextView) findViewById(R.id.pitanjaText);
 
         Resources res = getResources();
-        kvizovi=bundle.getParcelableArrayList("kvizovi");
+        kvizovi = bundle.getParcelableArrayList("kvizovi");
         kategorije = bundle.getParcelableArrayList("kategorije");
 
         for (int i = 0; i < kategorije.size(); i++) {
@@ -81,7 +77,7 @@ public class DodajKvizAkt extends AppCompatActivity {
         pitanjaKviza = new ArrayList<>();
         pitanjaKviza.add(new Pitanje("Dodaj Pitanje", "Dodaj Pitanje", new ArrayList<String>(), ""));
         for (int i = 0; i < kviz.getPitanja().size(); i++) {
-            if(!kviz.getPitanja().get(i).getNaziv().equals("Dodaj Pitanje")) {
+            if (!kviz.getPitanja().get(i).getNaziv().equals("Dodaj Pitanje")) {
                 pitanjaKviza.add(pitanjaKviza.size() - 1, kviz.getPitanja().get(i));
             }
         }
@@ -102,7 +98,7 @@ public class DodajKvizAkt extends AppCompatActivity {
                 if (kategorija.getNaziv().equals("Dodaj kategoriju")) {
                     spKategorije.setSelection(0);
                     Intent intent = new Intent(DodajKvizAkt.this, DodajKategorijuAkt.class);
-                    intent.putExtra("kategorije",kategorije);
+                    intent.putExtra("kategorije", kategorije);
                     startActivityForResult(intent, 3);
 
                 } else {
@@ -136,7 +132,7 @@ public class DodajKvizAkt extends AppCompatActivity {
             public void onClick(View view) {
                 if (!imaIme() || imaKviz()) {
                     etNaziv.setBackgroundColor(getResources().getColor(R.color.red));
-                } else{
+                } else {
                     etNaziv.setBackgroundColor(getResources().getColor(R.color.colorLabel1));
                 }
                 if (!imaPitanja()) {
@@ -162,10 +158,10 @@ public class DodajKvizAkt extends AppCompatActivity {
         setData();
     }
 
-    public boolean imaKviz(){
-        String s=etNaziv.getText().toString();
-        for(Kviz k: kvizovi){
-            if(k.getNaziv().equals(s)){
+    public boolean imaKviz() {
+        String s = etNaziv.getText().toString();
+        for (Kviz k : kvizovi) {
+            if (k.getNaziv().equals(s)) {
                 return true;
             }
         }
@@ -206,14 +202,14 @@ public class DodajKvizAkt extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
 
                 Bundle bundle = data.getExtras();
-                Pitanje pitanje=bundle.getParcelable("pitanje");
-                pitanjaKviza.add(pitanjaKviza.size()-1,pitanje);
+                Pitanje pitanje = bundle.getParcelable("pitanje");
+                pitanjaKviza.add(pitanjaKviza.size() - 1, pitanje);
                 adapter.notifyDataSetChanged();
             }
             if (resultCode == RESULT_CANCELED) {
 
             }
-        } else if(requestCode==3){
+        } else if (requestCode == 3) {
             if (resultCode == RESULT_OK) {
                 Bundle bundle = data.getExtras();
                 Integer id = bundle.getInt("ikona");

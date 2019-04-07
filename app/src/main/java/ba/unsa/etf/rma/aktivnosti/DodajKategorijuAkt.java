@@ -11,7 +11,6 @@ import android.widget.EditText;
 import com.maltaisn.icondialog.Icon;
 import com.maltaisn.icondialog.IconDialog;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import ba.unsa.etf.rma.R;

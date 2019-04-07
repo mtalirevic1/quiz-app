@@ -48,9 +48,6 @@ public class DodajPitanjeAkt extends AppCompatActivity {
         btnDodajPitanje =(Button)findViewById(R.id.btnDodajPitanje);
         btnDodajTacan =(Button)findViewById(R.id.btnDodajTacan);
 
-       /* etNaziv.setText(getString(R.string.etNazivPitanja));
-        etOdgovor.setText(getString(R.string.odgovor));*/
-
         tacan="";
         odgovori=new ArrayList<>();
         Resources res=getResources();
