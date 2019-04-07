@@ -29,7 +29,6 @@ public class DodajKategorijuAkt extends AppCompatActivity implements IconDialog.
     protected void onCreate(Bundle state) {
         super.onCreate(state);
         setContentView(R.layout.dodaj_kategoriju_akt);
-
         Bundle bundle=getIntent().getExtras();
         kategorije=bundle.getParcelableArrayList("kategorije");
 

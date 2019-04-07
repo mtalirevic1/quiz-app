@@ -203,12 +203,17 @@ public class DodajKvizAkt extends AppCompatActivity {
 
             }
         } else if(requestCode==3){
-            Bundle bundle=data.getExtras();
-            Integer id= bundle.getInt("ikona");
-            String kat=bundle.getString("kategorija");
-            kategorije.add(kategorije.size()-1,new Kategorija(kat,id.toString()));
-            spKategorije.setSelection(kategorije.size()-2);
-            adapterSp.notifyDataSetChanged();
+            if (resultCode == RESULT_OK) {
+                Bundle bundle = data.getExtras();
+                Integer id = bundle.getInt("ikona");
+                String kat = bundle.getString("kategorija");
+                kategorije.add(kategorije.size() - 1, new Kategorija(kat, id.toString()));
+                spKategorije.setSelection(kategorije.size() - 2);
+                adapterSp.notifyDataSetChanged();
+            }
+            if (resultCode == RESULT_CANCELED) {
+
+            }
         }
     }
 
