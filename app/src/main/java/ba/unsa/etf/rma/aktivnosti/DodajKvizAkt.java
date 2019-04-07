@@ -77,7 +77,9 @@ public class DodajKvizAkt extends AppCompatActivity {
         pitanjaKviza = new ArrayList<>();
         pitanjaKviza.add(new Pitanje("Dodaj Pitanje", "Dodaj Pitanje", new ArrayList<String>(), ""));
         for (int i = 0; i < kviz.getPitanja().size(); i++) {
-            pitanjaKviza.add(pitanjaKviza.size() - 1, kviz.getPitanja().get(i));
+            if(!kviz.getPitanja().get(i).getNaziv().equals("Dodaj Pitanje")) {
+                pitanjaKviza.add(pitanjaKviza.size() - 1, kviz.getPitanja().get(i));
+            }
         }
 
 
@@ -110,13 +112,8 @@ public class DodajKvizAkt extends AppCompatActivity {
         lvDodanaPitanja.setAdapter(adapter);
         lvMogucaPitanja.setAdapter(adapterMoguca);
 
-        if (novi) {
-            etNaziv.setText(getString(R.string.etNaziv));
-        } else {
-            etNaziv.setText(kviz.getNaziv());
-        }
-
         if (!novi) {
+            etNaziv.setText(kviz.getNaziv());
             Kategorija k = kviz.getKategorija();
             for (int i = 0; i < kategorije.size(); i++) {
                 if (kategorije.get(i).getNaziv().equals(k.getNaziv())) {
