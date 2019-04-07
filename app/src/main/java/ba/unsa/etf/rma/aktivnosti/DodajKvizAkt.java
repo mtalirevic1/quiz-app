@@ -40,6 +40,7 @@ public class DodajKvizAkt extends AppCompatActivity {
     private Kviz kviz;
     private ArrayList<String> odg;
     private ArrayList<Kviz> kvizovi;
+    private String prvobitno;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,9 @@ public class DodajKvizAkt extends AppCompatActivity {
         pos = bundle.getInt("p");
         novi = bundle.getBoolean("novi");
 
+
+        if(novi) prvobitno="";
+        else prvobitno=kviz.getNaziv();
 
         etNaziv = (EditText) findViewById(R.id.etNaziv);
         lvDodanaPitanja = (ListView) findViewById(R.id.lvDodanaPitanja);
@@ -130,7 +134,7 @@ public class DodajKvizAkt extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                if (!imaIme() || imaKviz()) {
+                if (!imaIme() ||(!novi && imaKviz() && !imaPrvobitno()) || (novi && imaKviz())) {
                     etNaziv.setBackgroundColor(getResources().getColor(R.color.red));
                 } else {
                     etNaziv.setBackgroundColor(getResources().getColor(R.color.colorLabel1));
@@ -141,7 +145,7 @@ public class DodajKvizAkt extends AppCompatActivity {
                     pitanjaText.setTextColor(getResources().getColor(R.color.colorLabel1));
                 }
 
-                if (imaPitanja() && imaIme() && !imaKviz()) {
+                if ((imaPitanja() && imaIme() && !novi && (!imaKviz() || imaPrvobitno())) || (imaPitanja() && imaIme() && novi && !imaKviz()) ) {
                     kviz.setNaziv(etNaziv.getText().toString());
                     kviz.setKategorija((Kategorija) spKategorije.getSelectedItem());
                     kviz.setPitanja(pitanjaKviza);
@@ -149,6 +153,7 @@ public class DodajKvizAkt extends AppCompatActivity {
                     returnIntent.putExtra("kviz", new Kviz(kviz.getNaziv(), kviz.getKategorija(), kviz.getPitanja()));
                     returnIntent.putExtra("novi", novi);
                     returnIntent.putExtra("p", pos);
+                    returnIntent.putExtra("kategorije",kategorije);
                     setResult(RESULT_OK, returnIntent);
                     finish();
                 }
@@ -158,12 +163,20 @@ public class DodajKvizAkt extends AppCompatActivity {
         setData();
     }
 
+
     public boolean imaKviz() {
         String s = etNaziv.getText().toString();
         for (Kviz k : kvizovi) {
             if (k.getNaziv().equals(s)) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    public boolean imaPrvobitno(){
+        if(prvobitno.equals(etNaziv.getText().toString())){
+            return true;
         }
         return false;
     }
@@ -222,6 +235,14 @@ public class DodajKvizAkt extends AppCompatActivity {
 
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("kategorije",kategorije);
+        setResult(RESULT_CANCELED, returnIntent);
+        finish();
     }
 
     public void onMoguceClick(int mPosition) {

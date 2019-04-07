@@ -86,19 +86,24 @@ public class KvizoviAkt extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == 1) {
+            Bundle bundle = data.getExtras();
+
+            ArrayList<Kategorija> noveK=bundle.getParcelableArrayList("kategorije");
+
+            for(Kategorija k: noveK) {
+                if (!imaKategorija(k) && !k.getNaziv().equals("Dodaj kategoriju")) {
+                    kategorije.add(k);
+                }
+            }
+            adapterSp.notifyDataSetChanged();
 
             if (resultCode == RESULT_OK) {
 
-                Bundle bundle = data.getExtras();
+
                 Kviz kviz = (Kviz) bundle.getParcelable("kviz");
                 Integer pos = bundle.getInt("p");
                 Boolean novi = bundle.getBoolean("novi");
 
-                Kategorija kategorija=kviz.getKategorija();
-
-                if(!imaKategorija(kategorija)){
-                    kategorije.add(kategorija);
-                }
 
                 if (!novi) {
                     Kviz k = filtriranaLista.get(pos);
@@ -114,7 +119,7 @@ public class KvizoviAkt extends AppCompatActivity {
 
             }
             if (resultCode == RESULT_CANCELED) {
-
+            adapter.notifyDataSetChanged();
             }
         }
     }
