@@ -7,94 +7,94 @@
 
     <Button
         android:id="@+id/btnDodajKviz"
-        android:layout_width="290dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="540dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="3dp"
         android:background="@drawable/buttonshape"
         android:fontFamily="sans-serif"
         android:text="@string/dodaj_kviz"
         android:textAllCaps="false"
         android:textColor="@color/plava"
         android:textSize="18dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/lvMogucaPitanja" />
 
     <Spinner
         android:id="@+id/spKategorije"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/etNaziv"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/etNaziv"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="42dp"
-        android:layout_marginEnd="10dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/edittextbackground"
         android:hint="@string/etNaziv"
         android:inputType="text"
+        app:layout_constraintBottom_toTopOf="@+id/pitanjaText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/spKategorije" />
 
 
     <TextView
         android:id="@+id/pitanjaText"
         android:layout_width="154dp"
-        android:layout_height="23dp"
-        android:layout_marginStart="128dp"
-        android:layout_marginTop="87dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="2dp"
         android:text="@string/pitanja_u_kvizu"
         android:textAlignment="center"
         android:textColor="@color/colorLabel1"
         android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/lvDodanaPitanja"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/etNaziv" />
 
     <ListView
         android:id="@+id/lvDodanaPitanja"
-        android:layout_width="match_parent"
-        android:layout_height="264dp"
-        android:layout_marginTop="112dp"
+        android:layout_width="0dp"
+        android:layout_height="180dp"
+        android:layout_marginBottom="3dp"
+        app:layout_constraintBottom_toTopOf="@+id/mogucaText"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/pitanjaText" />
 
     <TextView
         android:id="@+id/mogucaText"
         android:layout_width="154dp"
-        android:layout_height="24dp"
-        android:layout_marginStart="128dp"
-        android:layout_marginTop="379dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="2dp"
         android:text="@string/moguca_pitanja"
         android:textAlignment="center"
         android:textColor="@color/colorLabel2"
         android:textSize="16dp"
         app:layout_constraintBottom_toTopOf="@+id/lvMogucaPitanja"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/lvDodanaPitanja" />
 
     <ListView
         android:id="@+id/lvMogucaPitanja"
-        android:layout_width="match_parent"
-        android:layout_height="123dp"
-        android:layout_marginTop="402dp"
-        android:layout_marginBottom="8dp"
+        android:layout_width="0dp"
+        android:layout_height="115dp"
+        android:layout_marginBottom="12dp"
         app:layout_constraintBottom_toTopOf="@+id/btnDodajKviz"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/mogucaText" />
 
 
 </android.support.constraint.ConstraintLayout>

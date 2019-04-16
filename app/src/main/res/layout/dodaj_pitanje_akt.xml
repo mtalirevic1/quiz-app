@@ -8,94 +8,111 @@
 
     <EditText
         android:id="@+id/etNaziv"
-        android:layout_width="366dp"
-        android:layout_height="35dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="22dp"
         android:layout_marginTop="42dp"
+        android:layout_marginEnd="22dp"
+        android:layout_marginBottom="25dp"
         android:background="@drawable/edittextbackground"
-        android:inputType="text"
         android:hint="@string/etNazivPitanja"
+        android:inputType="text"
+        app:layout_constraintBottom_toTopOf="@+id/odgovoriText"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/odgovoriText"
         android:layout_width="154dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="128dp"
-        android:layout_marginTop="102dp"
+        android:layout_height="39dp"
+        android:layout_marginBottom="9dp"
         android:text="@string/odgovori"
         android:textAlignment="center"
         android:textColor="@color/colorLabel1"
         android:textSize="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/lvOdgovori"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/etNaziv" />
 
     <ListView
         android:id="@+id/lvOdgovori"
-        android:layout_width="match_parent"
-        android:layout_height="122dp"
-        android:layout_marginTop="146dp"
+        android:layout_width="0dp"
+        android:layout_height="93dp"
+        android:layout_marginBottom="6dp"
+        app:layout_constraintBottom_toTopOf="@+id/etOdgovor"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/odgovoriText" />
 
     <EditText
         android:id="@+id/etOdgovor"
-        android:layout_width="366dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="22dp"
-        android:layout_marginTop="294dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/edittextbackground"
-        android:inputType="text"
         android:hint="@string/odgovor"
+        android:inputType="text"
+        app:layout_constraintBottom_toTopOf="@+id/btnDodajOdgovor"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/lvOdgovori" />
 
     <Button
         android:id="@+id/btnDodajOdgovor"
-        android:layout_width="363dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="23dp"
-        android:layout_marginTop="344dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginBottom="9dp"
         android:background="@drawable/buttonshape"
         android:fontFamily="sans-serif"
         android:text="@string/dodaj"
         android:textAllCaps="false"
         android:textColor="@color/plava"
         android:textSize="18dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnDodajTacan"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/etOdgovor" />
 
     <Button
         android:id="@+id/btnDodajTacan"
-        android:layout_width="363dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="413dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="32dp"
         android:background="@drawable/buttonshape"
         android:fontFamily="sans-serif"
         android:text="@string/dodaj_tacan"
         android:textAllCaps="false"
         android:textColor="@color/colorLabel1"
         android:textSize="18dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnDodajPitanje"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/btnDodajOdgovor" />
 
     <Button
         android:id="@+id/btnDodajPitanje"
-        android:layout_width="300dp"
-        android:layout_height="69dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="55dp"
-        android:layout_marginTop="505dp"
+        android:layout_marginEnd="55dp"
+        android:layout_marginBottom="29dp"
         android:backgroundTint="@color/plava"
         android:fontFamily="sans-serif"
         android:text="@string/spasi_pitanje"
         android:textAllCaps="false"
         android:textColor="@color/bijela"
         android:textSize="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/btnDodajTacan" />
 
 </android.support.constraint.ConstraintLayout>
