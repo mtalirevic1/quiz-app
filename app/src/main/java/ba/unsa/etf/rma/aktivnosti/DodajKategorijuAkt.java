@@ -51,13 +51,13 @@ public class DodajKategorijuAkt extends AppCompatActivity implements IconDialog.
             @Override
             public void onClick(View v) {
                 if (!imaIme()) {
-                    etNaziv.setBackgroundColor(getResources().getColor(R.color.red));
+                    etNaziv.setBackgroundColor(getResources().getColor(R.color.crvena));
                 } else{
                     etNaziv.setBackgroundColor(getResources().getColor(R.color.colorLabel1));
                 }
 
                 if (!imaId()) {
-                    etIkona.setBackgroundColor(getResources().getColor(R.color.red));
+                    etIkona.setBackgroundColor(getResources().getColor(R.color.crvena));
                 } else {
                     etIkona.setBackgroundColor(getResources().getColor(R.color.colorLabel1));
                 }

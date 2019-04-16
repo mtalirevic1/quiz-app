@@ -85,7 +85,7 @@ public class BlueListAdapter extends BaseAdapter {
         holder.text.setText(pitanje);
         holder.image.setImageResource(res.getIdentifier("plavikrug", "drawable", "ba.unsa.etf.rma"));
         if (tacan.equals(pitanje)) holder.text.setTextColor(res.getColor(R.color.colorLabel1));
-        else holder.text.setTextColor(res.getColor(R.color.black));
+        else holder.text.setTextColor(res.getColor(R.color.crna));
 
         view.setOnClickListener(new BlueListAdapter.OnItemClickListener(position));
 

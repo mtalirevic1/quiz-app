@@ -5,9 +5,10 @@
     <color name="colorAccent">#D81B60</color>
     <color name="colorLabel1">#4CAF50</color>
     <color name="colorLabel2">#D3A124</color>
-    <color name="white">#FFFFFF</color>
-    <color name="blue">#2196F3</color>
-    <color name="gray">#C9CED1</color>
-    <color name="red">#EE4F4F</color>
-    <color name="black">#000000</color>
+    <color name="bijela">#FFFFFF</color>
+    <color name="plava">#2196F3</color>
+    <color name="siva">#C9CED1</color>
+    <color name="crvena">#FF3030</color>
+    <color name="zelena">7FFF00</color>
+    <color name="crna">#000000</color>
 </resources>

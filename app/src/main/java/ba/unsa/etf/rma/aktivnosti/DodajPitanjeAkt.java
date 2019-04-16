@@ -79,12 +79,12 @@ public class DodajPitanjeAkt extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!imaNaziv()) {
-                    etNaziv.setBackgroundColor(getResources().getColor(R.color.red));
+                    etNaziv.setBackgroundColor(getResources().getColor(R.color.crvena));
                 } else {
                     etNaziv.setBackgroundColor(getResources().getColor(R.color.colorLabel1));
                 }
                 if (!imaOdgovora()) {
-                    odgovoriText.setTextColor(getResources().getColor(R.color.red));
+                    odgovoriText.setTextColor(getResources().getColor(R.color.crvena));
                 } else {
                     odgovoriText.setTextColor(getResources().getColor(R.color.colorLabel1));
                 }

@@ -135,12 +135,12 @@ public class DodajKvizAkt extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (!imaIme() ||(!novi && imaKviz() && !imaPrvobitno()) || (novi && imaKviz())) {
-                    etNaziv.setBackgroundColor(getResources().getColor(R.color.red));
+                    etNaziv.setBackgroundColor(getResources().getColor(R.color.crvena));
                 } else {
                     etNaziv.setBackgroundColor(getResources().getColor(R.color.colorLabel1));
                 }
                 if (!imaPitanja()) {
-                    pitanjaText.setTextColor(getResources().getColor(R.color.red));
+                    pitanjaText.setTextColor(getResources().getColor(R.color.crvena));
                 } else {
                     pitanjaText.setTextColor(getResources().getColor(R.color.colorLabel1));
                 }
