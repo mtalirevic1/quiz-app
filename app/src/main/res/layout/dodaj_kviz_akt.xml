@@ -6,20 +6,43 @@
     android:layout_height="match_parent">
 
     <Button
+        android:id="@+id/btnImportKviz"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="62dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="62dp"
+        android:layout_marginBottom="28dp"
+        android:background="@drawable/buttonshape"
+        android:fontFamily="sans-serif"
+        android:text="@string/importuj_kviz"
+        android:textAllCaps="false"
+        android:textColor="@color/plava"
+        android:textSize="18dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnDodajKviz"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
         android:id="@+id/btnDodajKviz"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginEnd="60dp"
-        android:layout_marginBottom="3dp"
+        android:layout_marginStart="62dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="62dp"
+        android:layout_marginBottom="13dp"
         android:background="@drawable/buttonshape"
         android:fontFamily="sans-serif"
         android:text="@string/dodaj_kviz"
         android:textAllCaps="false"
         android:textColor="@color/plava"
         android:textSize="18dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btnImportKviz"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lvMogucaPitanja" />
 
@@ -27,7 +50,9 @@
         android:id="@+id/spKategorije"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="10dp"
+        android:layout_marginEnd="5dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/etNaziv"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,7 +62,10 @@
     <EditText
         android:id="@+id/etNaziv"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="5dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/edittextbackground"
         android:hint="@string/etNaziv"
@@ -50,9 +78,12 @@
 
     <TextView
         android:id="@+id/pitanjaText"
-        android:layout_width="154dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="2dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="1dp"
         android:text="@string/pitanja_u_kvizu"
         android:textAlignment="center"
         android:textColor="@color/colorLabel1"
@@ -65,36 +96,39 @@
     <ListView
         android:id="@+id/lvDodanaPitanja"
         android:layout_width="0dp"
-        android:layout_height="180dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="3dp"
         app:layout_constraintBottom_toTopOf="@+id/mogucaText"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pitanjaText" />
+        app:layout_constraintTop_toBottomOf="@+id/pitanjaText"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/mogucaText"
-        android:layout_width="154dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="2dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:text="@string/moguca_pitanja"
         android:textAlignment="center"
         android:textColor="@color/colorLabel2"
         android:textSize="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/lvMogucaPitanja"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lvDodanaPitanja" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
         android:id="@+id/lvMogucaPitanja"
         android:layout_width="0dp"
-        android:layout_height="115dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="12dp"
         app:layout_constraintBottom_toTopOf="@+id/btnDodajKviz"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mogucaText" />
+        app:layout_constraintTop_toBottomOf="@+id/mogucaText"
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </android.support.constraint.ConstraintLayout>

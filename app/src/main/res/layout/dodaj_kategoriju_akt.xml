@@ -9,7 +9,7 @@
     <EditText
         android:id="@+id/etNaziv"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="17dp"
         android:layout_marginEnd="16dp"
@@ -28,11 +28,11 @@
     <EditText
         android:id="@+id/etIkona"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="61dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="9dp"
         android:background="@drawable/edittextbackground"
         android:ems="10"
         android:hint="@string/ikona"
@@ -42,15 +42,15 @@
         app:layout_constraintBottom_toTopOf="@+id/btnDodajKategoriju"
         app:layout_constraintEnd_toStartOf="@+id/btnDodajIkonu"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/etNaziv" />
 
     <Button
         android:id="@+id/btnDodajIkonu"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="61dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="54dp"
+        android:layout_marginEnd="12dp"
         android:backgroundTint="@color/plava"
         android:text="@string/dodaj_ikonu"
         android:textAllCaps="false"
@@ -65,9 +65,10 @@
         android:id="@+id/btnDodajKategoriju"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="457dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="460dp"
         android:backgroundTint="@color/plava"
         android:text="@string/spasi_kategoriju"
         android:textAllCaps="false"
@@ -76,5 +77,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etIkona" />
+        app:layout_constraintTop_toBottomOf="@+id/btnDodajIkonu" />
+
 </android.support.constraint.ConstraintLayout>

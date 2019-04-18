@@ -9,9 +9,9 @@
     <EditText
         android:id="@+id/etNaziv"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="22dp"
-        android:layout_marginTop="42dp"
+        android:layout_marginTop="22dp"
         android:layout_marginEnd="22dp"
         android:layout_marginBottom="25dp"
         android:background="@drawable/edittextbackground"
@@ -24,14 +24,14 @@
 
     <TextView
         android:id="@+id/odgovoriText"
-        android:layout_width="154dp"
-        android:layout_height="39dp"
-        android:layout_marginBottom="9dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="92dp"
         android:text="@string/odgovori"
         android:textAlignment="center"
         android:textColor="@color/colorLabel1"
         android:textSize="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/lvOdgovori"
+        app:layout_constraintBottom_toTopOf="@+id/etOdgovor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etNaziv" />
@@ -39,18 +39,22 @@
     <ListView
         android:id="@+id/lvOdgovori"
         android:layout_width="0dp"
-        android:layout_height="93dp"
-        android:layout_marginBottom="6dp"
-        app:layout_constraintBottom_toTopOf="@+id/etOdgovor"
+        android:layout_height="90dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginBottom="150dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnDodajTacan"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/odgovoriText" />
+        app:layout_constraintTop_toTopOf="@+id/etNaziv"
+        app:layout_constraintVertical_bias="1.0" />
 
     <EditText
         android:id="@+id/etOdgovor"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/edittextbackground"
@@ -58,8 +62,9 @@
         android:inputType="text"
         app:layout_constraintBottom_toTopOf="@+id/btnDodajOdgovor"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lvOdgovori" />
+        app:layout_constraintTop_toBottomOf="@+id/odgovoriText" />
 
     <Button
         android:id="@+id/btnDodajOdgovor"
@@ -100,16 +105,16 @@
     <Button
         android:id="@+id/btnDodajPitanje"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="55dp"
         android:layout_marginEnd="55dp"
-        android:layout_marginBottom="29dp"
+        android:layout_marginBottom="30dp"
         android:backgroundTint="@color/plava"
         android:fontFamily="sans-serif"
         android:text="@string/spasi_pitanje"
         android:textAllCaps="false"
         android:textColor="@color/bijela"
-        android:textSize="24dp"
+        android:textSize="26dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
