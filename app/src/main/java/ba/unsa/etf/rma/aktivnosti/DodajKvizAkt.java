@@ -297,9 +297,8 @@ public class DodajKvizAkt extends AppCompatActivity {
 
             String naziv;
             String kategorija;
-            Integer brojPitanja;
+            Integer brojPitanja=0;
             ArrayList<Pitanje> pitanja = new ArrayList<>();
-            ArrayList<String> odgovori = new ArrayList<>();
 
             line = reader.readLine();
             String[] red = line.split(",");
@@ -312,8 +311,11 @@ public class DodajKvizAkt extends AppCompatActivity {
                 throw new NeispravnaDatotekaException("Kviz kojeg importujete već postoji!");
 
             }
-
-            brojPitanja = Integer.parseInt(red[2]);
+            try {
+                brojPitanja = Integer.parseInt(red[2]);
+            }catch (NumberFormatException e){
+                throw new NeispravnaDatotekaException("Datoteka kviza kojeg importujete nema ispravan format!");
+            }
             if (brojPitanja <= 0) {
 
                 throw new NeispravnaDatotekaException("Kviz kojeg importujete ima neispravan broj pitanja!");
@@ -325,6 +327,36 @@ public class DodajKvizAkt extends AppCompatActivity {
                 if ((line = reader.readLine()) == null) {
                     throw new NeispravnaDatotekaException("Kviz kojeg imporujete ima neispravan broj pitanja!");
                 }
+                String nazivPitanja=red[0];
+                for(Pitanje p: pitanja){
+                    if(p.getNaziv().equals(nazivPitanja)){
+                        throw new NeispravnaDatotekaException("Kviz nije ispravan postoje dva pitanja sa istim nazivom!");
+                    }
+                }
+
+                ArrayList<String> odgovori=new ArrayList<>();
+                Integer brojOdgovora=0,indeksTacnog=-1;
+                try {
+                    brojOdgovora = Integer.parseInt(red[1]);
+                }catch (NumberFormatException e){
+                    throw new NeispravnaDatotekaException("Datoteka kviza kojeg importujete nema ispravan format!");
+                }
+
+                if(red.length-3!=brojOdgovora){
+                    throw new NeispravnaDatotekaException("Kviz kojeg importujete ima neispravan broj odgovora!");
+                }
+
+                try {
+                    indeksTacnog = Integer.parseInt(red[2]);
+                }catch (NumberFormatException e){
+                    throw new NeispravnaDatotekaException("Datoteka kviza kojeg importujete nema ispravan format!");
+                }
+
+                if(indeksTacnog<0 || indeksTacnog>=brojOdgovora){
+                    throw new NeispravnaDatotekaException("Kviz kojeg importujete ima neispravan index tačnog odgovora!");
+                }
+
+                //todo petlja za uzimanje odgovora ubacivanje u listu, onda ubaciti pitanje u listu
             }
 
 
