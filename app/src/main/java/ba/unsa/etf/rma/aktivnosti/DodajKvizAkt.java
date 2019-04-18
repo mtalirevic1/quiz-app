@@ -1,8 +1,11 @@
 package ba.unsa.etf.rma.aktivnosti;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,12 +16,21 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+
 
 import ba.unsa.etf.rma.R;
 import ba.unsa.etf.rma.klase.DodajKvizAdapter;
 import ba.unsa.etf.rma.klase.Kategorija;
 import ba.unsa.etf.rma.klase.Kviz;
+import ba.unsa.etf.rma.klase.NeispravnaDatotekaException;
 import ba.unsa.etf.rma.klase.Pitanje;
 import ba.unsa.etf.rma.klase.PlusListAdapter;
 
@@ -28,6 +40,7 @@ public class DodajKvizAkt extends AppCompatActivity {
     private Spinner spKategorije;
     private EditText etNaziv;
     private Button btnDodajKviz;
+    private Button btnImportKviz;
     private DodajKvizAdapter adapter;
     private ArrayAdapter adapterSp;
     private TextView pitanjaText;
@@ -42,6 +55,7 @@ public class DodajKvizAkt extends AppCompatActivity {
     private ArrayList<Kviz> kvizovi;
     private String prvobitno;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,14 +67,15 @@ public class DodajKvizAkt extends AppCompatActivity {
         novi = bundle.getBoolean("novi");
 
 
-        if(novi) prvobitno="";
-        else prvobitno=kviz.getNaziv();
+        if (novi) prvobitno = "";
+        else prvobitno = kviz.getNaziv();
 
         etNaziv = (EditText) findViewById(R.id.etNaziv);
         lvDodanaPitanja = (ListView) findViewById(R.id.lvDodanaPitanja);
         lvMogucaPitanja = (ListView) findViewById(R.id.lvMogucaPitanja);
         spKategorije = (Spinner) findViewById(R.id.spKategorije);
         btnDodajKviz = (Button) findViewById(R.id.btnDodajKviz);
+        btnImportKviz = (Button) findViewById(R.id.btnImportKviz);
         pitanjaText = (TextView) findViewById(R.id.pitanjaText);
 
         Resources res = getResources();
@@ -134,7 +149,7 @@ public class DodajKvizAkt extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                if (!imaIme() ||(!novi && imaKviz() && !imaPrvobitno()) || (novi && imaKviz())) {
+                if (!imaIme() || (!novi && imaKviz() && !imaPrvobitno()) || (novi && imaKviz())) {
                     etNaziv.setBackgroundColor(getResources().getColor(R.color.crvena));
                 } else {
                     etNaziv.setBackgroundColor(getResources().getColor(R.color.colorLabel1));
@@ -145,7 +160,7 @@ public class DodajKvizAkt extends AppCompatActivity {
                     pitanjaText.setTextColor(getResources().getColor(R.color.colorLabel1));
                 }
 
-                if ((imaPitanja() && imaIme() && !novi && (!imaKviz() || imaPrvobitno())) || (imaPitanja() && imaIme() && novi && !imaKviz()) ) {
+                if ((imaPitanja() && imaIme() && !novi && (!imaKviz() || imaPrvobitno())) || (imaPitanja() && imaIme() && novi && !imaKviz())) {
                     kviz.setNaziv(etNaziv.getText().toString());
                     kviz.setKategorija((Kategorija) spKategorije.getSelectedItem());
                     kviz.setPitanja(pitanjaKviza);
@@ -153,16 +168,28 @@ public class DodajKvizAkt extends AppCompatActivity {
                     returnIntent.putExtra("kviz", new Kviz(kviz.getNaziv(), kviz.getKategorija(), kviz.getPitanja()));
                     returnIntent.putExtra("novi", novi);
                     returnIntent.putExtra("p", pos);
-                    returnIntent.putExtra("kategorije",kategorije);
+                    returnIntent.putExtra("kategorije", kategorije);
                     setResult(RESULT_OK, returnIntent);
                     finish();
                 }
             }
         });
 
+        btnImportKviz.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("text/csv,text/txt");
+                startActivityForResult(intent, 4);
+
+            }
+
+        });
+
         setData();
     }
-
 
     public boolean imaKviz() {
         String s = etNaziv.getText().toString();
@@ -174,8 +201,18 @@ public class DodajKvizAkt extends AppCompatActivity {
         return false;
     }
 
-    public boolean imaPrvobitno(){
-        if(prvobitno.equals(etNaziv.getText().toString())){
+    public boolean imaKviz(String naziv) {
+        for (Kviz k : kvizovi) {
+            if (k.getNaziv().equals(naziv)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public boolean imaPrvobitno() {
+        if (prvobitno.equals(etNaziv.getText().toString())) {
             return true;
         }
         return false;
@@ -234,13 +271,85 @@ public class DodajKvizAkt extends AppCompatActivity {
             if (resultCode == RESULT_CANCELED) {
 
             }
+        } else if (requestCode == 4) {
+            if (resultCode == RESULT_OK) {
+
+                Uri uri = null;
+                if (data != null) {
+                    uri = data.getData();
+
+                }
+
+            }
+            if (resultCode == RESULT_CANCELED) {
+
+            }
         }
     }
+
+    private void readFile(Uri uri) {
+        File file = new File(uri.getPath());
+        try {
+            InputStream inputStream = new FileInputStream(file);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+
+            String line;
+
+            String naziv;
+            String kategorija;
+            Integer brojPitanja;
+            ArrayList<Pitanje> pitanja = new ArrayList<>();
+            ArrayList<String> odgovori = new ArrayList<>();
+
+            line = reader.readLine();
+            String[] red = line.split(",");
+            if (red.length != 3) {
+                throw new NeispravnaDatotekaException("Datoteka kviza kojeg importujete nema ispravan format!");
+            }
+
+            if (imaKviz(red[0])) {
+
+                throw new NeispravnaDatotekaException("Kviz kojeg importujete već postoji!");
+
+            }
+
+            brojPitanja = Integer.parseInt(red[2]);
+            if (brojPitanja <= 0) {
+
+                throw new NeispravnaDatotekaException("Kviz kojeg importujete ima neispravan broj pitanja!");
+            }
+
+            kategorija = red[1];
+
+            for (int i = 0; i < brojPitanja; i++) {
+                if ((line = reader.readLine()) == null) {
+                    throw new NeispravnaDatotekaException("Kviz kojeg imporujete ima neispravan broj pitanja!");
+                }
+            }
+
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("File not found: " + e);
+        } catch (IOException e) {
+            throw new RuntimeException("Error in reading file: " + e);
+        } catch (NeispravnaDatotekaException e) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Greška")
+                    .setMessage(e.getMessage())
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    })
+                    .show();
+        }
+    }
+
 
     @Override
     public void onBackPressed() {
         Intent returnIntent = new Intent();
-        returnIntent.putExtra("kategorije",kategorije);
+        returnIntent.putExtra("kategorije", kategorije);
         setResult(RESULT_CANCELED, returnIntent);
         finish();
     }
@@ -254,7 +363,7 @@ public class DodajKvizAkt extends AppCompatActivity {
         }
     }
 
-    public void setData() {
+    private void setData() {
         odg = new ArrayList<>();
         odg.add("da");
         odg.add("ne");
