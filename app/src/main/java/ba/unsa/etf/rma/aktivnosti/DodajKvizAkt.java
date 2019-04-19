@@ -181,7 +181,7 @@ public class DodajKvizAkt extends AppCompatActivity {
 
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("text/csv,text/txt");
+                intent.setType("text/*");
                 startActivityForResult(intent, 4);
 
             }
@@ -277,7 +277,7 @@ public class DodajKvizAkt extends AppCompatActivity {
                 Uri uri = null;
                 if (data != null) {
                     uri = data.getData();
-
+                    readFile(uri);
                 }
 
             }
@@ -288,19 +288,31 @@ public class DodajKvizAkt extends AppCompatActivity {
     }
 
     private void readFile(Uri uri) {
-        File file = new File(uri.getPath());
+      // File file = new File(uri.toString());
         try {
-            InputStream inputStream = new FileInputStream(file);
+
+
+            InputStream inputStream = null;
+            try {
+                inputStream = getContentResolver().openInputStream(uri);
+            } catch (FileNotFoundException e) {
+                throw new NeispravnaDatotekaException("Datoteka nije pronađena!");
+            }
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
-            String line;
+            String line="";
 
             String naziv;
-            String kategorija;
+            Kategorija kategorija=new Kategorija();
             Integer brojPitanja=0;
             ArrayList<Pitanje> pitanja = new ArrayList<>();
 
-            line = reader.readLine();
+            try {
+                line = reader.readLine();
+            } catch (IOException e) {
+                throw new NeispravnaDatotekaException("Datoteka kviza kojeg importujete nema ispravan format!");
+
+            }
             String[] red = line.split(",");
             if (red.length != 3) {
                 throw new NeispravnaDatotekaException("Datoteka kviza kojeg importujete nema ispravan format!");
@@ -311,6 +323,8 @@ public class DodajKvizAkt extends AppCompatActivity {
                 throw new NeispravnaDatotekaException("Kviz kojeg importujete već postoji!");
 
             }
+            naziv=red[0];
+
             try {
                 brojPitanja = Integer.parseInt(red[2]);
             }catch (NumberFormatException e){
@@ -321,12 +335,20 @@ public class DodajKvizAkt extends AppCompatActivity {
                 throw new NeispravnaDatotekaException("Kviz kojeg importujete ima neispravan broj pitanja!");
             }
 
-            kategorija = red[1];
+            kategorija.setNaziv(red[1]);
+            kategorija.setId("42");
 
             for (int i = 0; i < brojPitanja; i++) {
-                if ((line = reader.readLine()) == null) {
+                try {
+                    if ((line = reader.readLine()) == null) {
+                        throw new NeispravnaDatotekaException("Kviz kojeg imporujete ima neispravan broj pitanja!");
+                    }
+                } catch (IOException e) {
                     throw new NeispravnaDatotekaException("Kviz kojeg imporujete ima neispravan broj pitanja!");
                 }
+
+                red = line.split(",");
+
                 String nazivPitanja=red[0];
                 for(Pitanje p: pitanja){
                     if(p.getNaziv().equals(nazivPitanja)){
@@ -356,14 +378,51 @@ public class DodajKvizAkt extends AppCompatActivity {
                     throw new NeispravnaDatotekaException("Kviz kojeg importujete ima neispravan index tačnog odgovora!");
                 }
 
-                //todo petlja za uzimanje odgovora ubacivanje u listu, onda ubaciti pitanje u listu
+                String tacan="";
+                for(int j=0; j<brojOdgovora;j++){
+                    String odgovor=red[j+3];
+
+                    for(String o: odgovori){
+                        if(o.equals(odgovor)){
+                            throw new NeispravnaDatotekaException("Kviz kojeg importujete nije ispravan postoji ponavljanje odgovora!");
+                        }
+                    }
+                    odgovori.add(odgovor);
+                    if(j==indeksTacnog){
+                        tacan=red[j+3];
+                    }
+                }
+                Pitanje p=new Pitanje(nazivPitanja,nazivPitanja,odgovori,tacan);
+                pitanja.add(p);
             }
 
+            Boolean imaKategorija=false;
+            for (int i = 0; i < kategorije.size(); i++) {
+                if (kategorije.get(i).getNaziv().equals(kategorija.getNaziv())) {
+                    spKategorije.setSelection(i);
+                    imaKategorija=true;
+                    break;
+                }
+            }
+            if(!imaKategorija){
+                kategorije.add(kategorije.size()-1,kategorija);
+                adapterSp.notifyDataSetChanged();
+                spKategorije.setSelection(kategorije.size()-2);
+            }
 
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("File not found: " + e);
-        } catch (IOException e) {
-            throw new RuntimeException("Error in reading file: " + e);
+            etNaziv.setText(naziv);
+            for(int i=0;i<pitanjaKviza.size();i++){
+                if(!pitanjaKviza.get(i).getNaziv().equals("Dodaj Pitanje")){
+                    pitanjaKviza.remove(i);
+                    i--;
+                }
+            }
+            for(Pitanje p: pitanja){
+                pitanjaKviza.add(pitanjaKviza.size()-1,p);
+            }
+
+            adapter.notifyDataSetChanged();
+
         } catch (NeispravnaDatotekaException e) {
             new AlertDialog.Builder(this)
                     .setTitle("Greška")
