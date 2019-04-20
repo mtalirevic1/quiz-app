@@ -15,6 +15,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pitanjePlace">
 
+
+        <fragment android:name="ba.unsa.etf.rma.fragmenti.InformacijeFrag"
+            android:id="@+id/informacijeFrag"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            />
+
     </FrameLayout>
 
     <FrameLayout

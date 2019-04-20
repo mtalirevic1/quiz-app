@@ -16,7 +16,5 @@
     <string name="dodaj_ikonu">Dodaj Ikonu</string>
     <string name="naziv_kategorije">  Naziv kategorije</string>
     <string name="importuj_kviz">Importuj kviz</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="naziv_kviza">Naziv kviza</string>
 </resources>
