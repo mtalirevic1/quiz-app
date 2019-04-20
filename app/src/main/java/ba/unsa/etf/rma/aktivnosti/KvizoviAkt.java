@@ -149,7 +149,11 @@ public class KvizoviAkt extends AppCompatActivity {
         }
     }
 
-    public void onItemClick(int mPosition) {
+    public void onItemClick(int mPosition){
+        //todo vezi sa IgrajKvizAkt
+    }
+
+    public void onLongItemClick(int mPosition) {
         Intent intent = new Intent(KvizoviAkt.this, DodajKvizAkt.class);
 
         intent.putExtra("kategorije", kategorije);
@@ -170,6 +174,7 @@ public class KvizoviAkt extends AppCompatActivity {
         intent.putExtra("kvizovi",unosi);
         startActivityForResult(intent, 1);
     }
+
 
     public void setData() {
         odgovori = new ArrayList<>();

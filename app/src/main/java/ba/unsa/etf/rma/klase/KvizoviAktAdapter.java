@@ -98,7 +98,7 @@ public class KvizoviAktAdapter extends BaseAdapter {
         return view;
     }
 
-    private class OnItemClickListener implements View.OnClickListener {
+    private class OnItemClickListener implements View.OnClickListener, View.OnLongClickListener {
         private int mPosition;
 
         OnItemClickListener(int position) {
@@ -109,6 +109,13 @@ public class KvizoviAktAdapter extends BaseAdapter {
         public void onClick(View arg0) {
             KvizoviAkt sct = (KvizoviAkt) activity;
             sct.onItemClick(mPosition);
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            KvizoviAkt sct=(KvizoviAkt) activity;
+            sct.onLongItemClick(mPosition);
+            return true;
         }
     }
 }
