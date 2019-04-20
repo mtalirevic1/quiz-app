@@ -17,8 +17,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +32,7 @@ import ba.unsa.etf.rma.klase.NeispravnaDatotekaException;
 import ba.unsa.etf.rma.klase.Pitanje;
 import ba.unsa.etf.rma.klase.PlusListAdapter;
 
-public class DodajKvizAkt extends AppCompatActivity {
+public class DodajKvizAkt extends AppCompatActivity  {
     private ListView lvDodanaPitanja;
     private ListView lvMogucaPitanja;
     private Spinner spKategorije;
@@ -396,6 +394,12 @@ public class DodajKvizAkt extends AppCompatActivity {
                 pitanja.add(p);
             }
 
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                throw new NeispravnaDatotekaException("Nije moguće zatvoriti datoteku!");
+            }
+
             Boolean imaKategorija=false;
             for (int i = 0; i < kategorije.size(); i++) {
                 if (kategorije.get(i).getNaziv().equals(kategorija.getNaziv())) {
@@ -406,8 +410,8 @@ public class DodajKvizAkt extends AppCompatActivity {
             }
             if(!imaKategorija){
                 kategorije.add(kategorije.size()-1,kategorija);
-                adapterSp.notifyDataSetChanged();
                 spKategorije.setSelection(kategorije.size()-2);
+                adapterSp.notifyDataSetChanged();
             }
 
             etNaziv.setText(naziv);
