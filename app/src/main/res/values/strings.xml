@@ -17,4 +17,7 @@
     <string name="naziv_kategorije">  Naziv kategorije</string>
     <string name="importuj_kviz">Importuj kviz</string>
     <string name="naziv_kviza">Naziv kviza</string>
+    <string name="broj_preostalih">Broj preostalih pitanja</string>
+    <string name="procenat_tacnih">Procenat tacnih pitanja</string>
+    <string name="broj_tacnih">Broj tacnih pitanja</string>
 </resources>

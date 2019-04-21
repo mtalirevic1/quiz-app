@@ -40,7 +40,7 @@ public class KvizoviAkt extends AppCompatActivity {
 
         kategorije = new ArrayList<>();
         filtriranaLista = new ArrayList<>();
-        pitanja=new ArrayList<>();
+        pitanja = new ArrayList<>();
         filtriranaLista.add(new Kviz("Dodaj Kviz", new Kategorija("Nista", ""), new ArrayList<Pitanje>(pitanja)));
         spPostojeceKategorije = (Spinner) findViewById(R.id.spPostojeceKategorije);
         adapterSp = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, kategorije);
@@ -90,9 +90,9 @@ public class KvizoviAkt extends AppCompatActivity {
         if (requestCode == 1) {
             Bundle bundle = data.getExtras();
 
-            ArrayList<Kategorija> noveK=bundle.getParcelableArrayList("kategorije");
+            ArrayList<Kategorija> noveK = bundle.getParcelableArrayList("kategorije");
 
-            for(Kategorija k: noveK) {
+            for (Kategorija k : noveK) {
                 if (!imaKategorija(k) && !k.getNaziv().equals("Dodaj kategoriju")) {
                     kategorije.add(k);
                 }
@@ -121,14 +121,22 @@ public class KvizoviAkt extends AppCompatActivity {
 
             }
             if (resultCode == RESULT_CANCELED) {
-            adapter.notifyDataSetChanged();
+                adapter.notifyDataSetChanged();
+            }
+        }
+        else if( requestCode==5){
+            if(resultCode==RESULT_OK){
+
+            }
+            if(resultCode==RESULT_CANCELED){
+
             }
         }
     }
 
-    public Boolean imaKategorija(Kategorija kategorija){
-        for(Kategorija k: kategorije){
-            if(k.getNaziv().equals(kategorija.getNaziv())){
+    public Boolean imaKategorija(Kategorija kategorija) {
+        for (Kategorija k : kategorije) {
+            if (k.getNaziv().equals(kategorija.getNaziv())) {
                 return true;
             }
         }
@@ -141,16 +149,24 @@ public class KvizoviAkt extends AppCompatActivity {
             lista.remove(0);
         }*/
 
-        for(int i=0;i<lista.size();i++){
-            if(!lista.get(i).getNaziv().equals("Dodaj Kviz")){
+        for (int i = 0; i < lista.size(); i++) {
+            if (!lista.get(i).getNaziv().equals("Dodaj Kviz")) {
                 lista.remove(i);
                 i--;
             }
         }
     }
 
-    public void onItemClick(int mPosition){
+    public void onItemClick(int mPosition) {
         //todo vezi sa IgrajKvizAkt
+        if (mPosition == filtriranaLista.size() - 1) {
+            return;
+        }
+
+        Intent intent = new Intent(KvizoviAkt.this, IgrajKvizAkt.class);
+        intent.putExtra("kviz", filtriranaLista.get(mPosition));
+        startActivityForResult(intent,5);
+
     }
 
     public void onLongItemClick(int mPosition) {
@@ -171,7 +187,7 @@ public class KvizoviAkt extends AppCompatActivity {
             novi = true;
         }
         intent.putExtra("novi", novi);
-        intent.putExtra("kvizovi",unosi);
+        intent.putExtra("kvizovi", unosi);
         startActivityForResult(intent, 1);
     }
 

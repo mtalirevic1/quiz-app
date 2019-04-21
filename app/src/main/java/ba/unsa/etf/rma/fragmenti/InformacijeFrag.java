@@ -7,28 +7,29 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import ba.unsa.etf.rma.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link InformacijeFrag.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link InformacijeFrag#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class InformacijeFrag extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     private OnFragmentInteractionListener mListener;
+
+    private TextView infNazivKviza;
+    private TextView infBrojTacnihPitanja;
+    private TextView infBrojPreostalihPitanja;
+    private TextView infProcenatTacni;
+
+    private TextView labelaBrojTacnihPitanja;
+    private TextView labelaBrojPreostalihPitanja;
+    private TextView labelaProcenatTacni;
+
+    private Button btnKraj;
 
     public InformacijeFrag() {
         // Required empty public constructor
@@ -68,12 +69,6 @@ public class InformacijeFrag extends Fragment {
         return inflater.inflate(R.layout.fragment_informacije, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {

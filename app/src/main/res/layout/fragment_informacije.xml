@@ -6,6 +6,61 @@
     tools:context=".fragmenti.InformacijeFrag">
 
     <TextView
+        android:id="@+id/labelaBrojPreostalihPitanja"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/broj_preostalih"
+
+        />
+
+    <TextView
+        android:id="@+id/labelaBrojTacnihPitanja"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/broj_tacnih"
+
+        />
+
+    <TextView
+        android:id="@+id/labelaProcenatTacni"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/procenat_tacnih"
+
+        />
+
+    <TextView
+        android:id="@+id/infBrojTacnihPitanja"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text=""
+
+        />
+
+    <TextView
+        android:id="@+id/infBrojPreostalihPitanja"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text=""
+
+        />
+
+    <TextView
+        android:id="@+id/infProcenatTacni"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text=""
+
+        />
+
+
+    <TextView
         android:id="@+id/infNazivKviza"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
