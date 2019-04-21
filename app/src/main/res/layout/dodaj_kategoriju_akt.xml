@@ -20,7 +20,7 @@
         android:inputType="textPersonName"
         android:textColor="#83878B"
         android:textSize="15sp"
-        app:layout_constraintBottom_toTopOf="@+id/btnDodajIkonu"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -30,53 +30,51 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="5dp"
-        android:layout_marginBottom="9dp"
         android:background="@drawable/edittextbackground"
         android:ems="10"
         android:hint="@string/ikona"
         android:inputType="textPersonName"
         android:textColor="#83878B"
         android:textSize="15sp"
-        app:layout_constraintBottom_toTopOf="@+id/btnDodajKategoriju"
         app:layout_constraintEnd_toStartOf="@+id/btnDodajIkonu"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etNaziv" />
 
     <Button
         android:id="@+id/btnDodajIkonu"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="54dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="12dp"
+        android:layout_marginBottom="5dp"
         android:backgroundTint="@color/plava"
         android:text="@string/dodaj_ikonu"
         android:textAllCaps="false"
         android:textColor="#FFFFFF"
         android:textSize="15sp"
-        app:layout_constraintBottom_toTopOf="@+id/btnDodajKategoriju"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/etIkona"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/etNaziv" />
 
     <Button
         android:id="@+id/btnDodajKategoriju"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="1dp"
+        android:layout_marginTop="11dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="460dp"
         android:backgroundTint="@color/plava"
         android:text="@string/spasi_kategoriju"
         android:textAllCaps="false"
         android:textColor="#FFFFFF"
         android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnDodajIkonu" />
+
 
 </android.support.constraint.ConstraintLayout>
