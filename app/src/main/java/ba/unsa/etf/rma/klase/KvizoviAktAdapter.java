@@ -93,12 +93,12 @@ public class KvizoviAktAdapter extends BaseAdapter {
             holder.image.setImageResource(res.getIdentifier("zeleniplus", "drawable", "ba.unsa.etf.rma"));
         }
 
-        view.setOnClickListener(new OnItemClickListener(position));
+      //  view.setOnClickListener(new OnItemClickListener(position));
 
         return view;
     }
 
-    private class OnItemClickListener implements View.OnClickListener, View.OnLongClickListener {
+   /* private class OnItemClickListener implements View.OnClickListener, View.OnLongClickListener {
         private int mPosition;
 
         OnItemClickListener(int position) {
@@ -115,7 +115,7 @@ public class KvizoviAktAdapter extends BaseAdapter {
         public boolean onLongClick(View v) {
             KvizoviAkt sct=(KvizoviAkt) activity;
             sct.onLongItemClick(mPosition);
-            return true;
+            return false;
         }
-    }
+    }*/
 }

@@ -82,6 +82,21 @@ public class KvizoviAkt extends AppCompatActivity {
         });
         lvKvizovi.setAdapter(adapter);
 
+        lvKvizovi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                naClick(position);
+            }
+        });
+
+       lvKvizovi.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                onLongItemClick(position);
+                return true;
+            }
+        });
+
         setData();
     }
 
@@ -157,38 +172,49 @@ public class KvizoviAkt extends AppCompatActivity {
         }
     }
 
-    public void onItemClick(int mPosition) {
+    public void onLongItemClick(int mPosition) {
         //todo vezi sa IgrajKvizAkt
         if (mPosition == filtriranaLista.size() - 1) {
             return;
         }
-
-        Intent intent = new Intent(KvizoviAkt.this, IgrajKvizAkt.class);
-        intent.putExtra("kviz", filtriranaLista.get(mPosition));
-        startActivityForResult(intent,5);
+        Boolean novi=false;
+        Kviz kviz=filtriranaLista.get(mPosition);
+        Integer pos=mPosition;
+        Intent intent = new Intent(KvizoviAkt.this, DodajKvizAkt.class);
+        intent.putExtra("kategorije", kategorije);
+        intent.putExtra("kviz", kviz);
+        novi = false;
+        intent.putExtra("novi", novi);
+        intent.putExtra("kvizovi", unosi);
+        intent.putExtra("p", pos);
+        startActivityForResult(intent, 1);
 
     }
 
-    public void onLongItemClick(int mPosition) {
-        Intent intent = new Intent(KvizoviAkt.this, DodajKvizAkt.class);
+    public void naClick(int mPosition) {
 
-        intent.putExtra("kategorije", kategorije);
         Integer pos = mPosition;
         Boolean novi = false;
-        intent.putExtra("p", pos);
         if (mPosition != filtriranaLista.size() - 1) {
-            //updateuj kviz
+          /*  //updateuj kviz
             Kviz temp = (Kviz) filtriranaLista.get(mPosition);
             intent.putExtra("kviz", new Kviz(temp.getNaziv(), temp.getKategorija(), temp.getPitanja()));
-            novi = false;
+            novi = false;*/
+            Intent intent = new Intent(KvizoviAkt.this, IgrajKvizAkt.class);
+            intent.putExtra("kviz", filtriranaLista.get(mPosition));
+            startActivityForResult(intent,5);
         } else {
             //dodaj kviz
+            Intent intent = new Intent(KvizoviAkt.this, DodajKvizAkt.class);
+            intent.putExtra("kategorije", kategorije);
             intent.putExtra("kviz", new Kviz("", new Kategorija("", ""), new ArrayList<Pitanje>()));
             novi = true;
+            intent.putExtra("novi", novi);
+            intent.putExtra("kvizovi", unosi);
+            intent.putExtra("p", pos);
+            startActivityForResult(intent, 1);
         }
-        intent.putExtra("novi", novi);
-        intent.putExtra("kvizovi", unosi);
-        startActivityForResult(intent, 1);
+
     }
 
 

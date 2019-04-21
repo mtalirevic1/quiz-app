@@ -16,5 +16,7 @@ public class IgrajKvizAkt extends AppCompatActivity {
         setContentView(R.layout.igraj_kviz_akt);
         Bundle bundle = getIntent().getExtras();
         kviz = (Kviz) bundle.getParcelable("kviz");
+
+
     }
 }
