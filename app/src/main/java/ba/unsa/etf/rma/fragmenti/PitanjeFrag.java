@@ -4,11 +4,15 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -21,6 +25,8 @@ import ba.unsa.etf.rma.klase.BlueListAdapter;
 import ba.unsa.etf.rma.klase.IgrajKvizAdapter;
 import ba.unsa.etf.rma.klase.Kviz;
 import ba.unsa.etf.rma.klase.Pitanje;
+
+import static android.app.Activity.RESULT_OK;
 
 
 public class PitanjeFrag extends Fragment {
@@ -35,7 +41,10 @@ public class PitanjeFrag extends Fragment {
 
     private Kviz kviz;
     private ArrayList<String> odgovori;
+    private ArrayList<Pitanje> pitanja;
     private String tacan;
+
+    private Handler handler;
 
     public PitanjeFrag() {
     }
@@ -43,7 +52,7 @@ public class PitanjeFrag extends Fragment {
     public static PitanjeFrag newInstance(Kviz kviz) {
         PitanjeFrag fragment = new PitanjeFrag();
         Bundle args = new Bundle();
-        args.putParcelable("kviz",kviz);
+        args.putParcelable("kviz", kviz);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,28 +61,30 @@ public class PitanjeFrag extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-           /* mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);*/
-           kviz=getArguments().getParcelable("kviz");
-           odgovori=new ArrayList<>();
-           tacan="";
-        }
 
+            kviz = getArguments().getParcelable("kviz");
+            odgovori = new ArrayList<>();
+            pitanja = kviz.getPitanja();
+        }
+        tacan = "";
+        handler = new Handler();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_pitanje, container, false);
-        odgovoriPitanja=(ListView) view.findViewById(R.id.odgovoriPitanja);
-        tekstPitanja=(TextView) view.findViewById(R.id.tekstPitanja);
+        View view = inflater.inflate(R.layout.fragment_pitanje, container, false);
+        odgovoriPitanja = (ListView) view.findViewById(R.id.odgovoriPitanja);
+        tekstPitanja = (TextView) view.findViewById(R.id.tekstPitanja);
 
         Resources res = getResources();
         Collections.shuffle(kviz.getPitanja());
-        if(kviz.getPitanja().size()>0){
-            odgovori.addAll(kviz.getPitanja().get(0).getOdgovori());
-            tacan=kviz.getPitanja().get(0).getTacan();
+        if (pitanja.size() > 0) {
+            odgovori.addAll(pitanja.get(0).getOdgovori());
+            tacan = pitanja.get(0).getTacan();
+            tekstPitanja.setText(pitanja.get(0).getTextPitanja());
+            pitanja.remove(0);
         }
 
         igrajKvizAdapter = new IgrajKvizAdapter(getActivity(), odgovori, res);
@@ -100,18 +111,56 @@ public class PitanjeFrag extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+
+    public void naClick(final int position) {
+        FragmentManager fm = getFragmentManager();
+        final InformacijeFrag f = (InformacijeFrag)fm.findFragmentByTag("infoFrag");
+        Boolean t;
+        if (odgovori.get(position).equals(tacan)) {
+            odgovoriPitanja.getChildAt(position).setBackgroundColor(getResources().getColor(R.color.zelena));
+            t=true;
+        } else {
+            odgovoriPitanja.getChildAt(position).setBackgroundColor(getResources().getColor(R.color.crvena));
+            t=false;
+        }
+        final Boolean isCorrect=t;
+        if (pitanja.size() == 0) {
+            f.updateStats(isCorrect);
+          //  odgovoriPitanja.setEnabled(false);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    odgovoriPitanja.getChildAt(position).setBackgroundColor(getResources().getColor(R.color.bijela));
+                    odgovori.clear();
+                    igrajKvizAdapter.notifyDataSetChanged();
+                    tekstPitanja.setText(getString(R.string.kviz_zavrsen));
+                    f.postaviTextPrazno();
+                   // odgovoriPitanja.setEnabled(true);
+                }
+            }, 2000);
+
+        } else {
+          //  odgovoriPitanja.setEnabled(false);
+            f.updateStats(isCorrect);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    odgovoriPitanja.getChildAt(position).setBackgroundColor(getResources().getColor(R.color.bijela));
+                    odgovori.clear();
+                    odgovori.addAll(pitanja.get(0).getOdgovori());
+                    tacan = pitanja.get(0).getTacan();
+                    igrajKvizAdapter.notifyDataSetChanged();
+                    tekstPitanja.setText(pitanja.get(0).getTextPitanja());
+
+                 //   odgovoriPitanja.setEnabled(true);
+                    pitanja.remove(0);
+                }
+            }, 2000);
+        }
+    }
+
+
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

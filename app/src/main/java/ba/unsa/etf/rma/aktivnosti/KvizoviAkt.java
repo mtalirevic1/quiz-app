@@ -201,7 +201,16 @@ public class KvizoviAkt extends AppCompatActivity {
             intent.putExtra("kviz", new Kviz(temp.getNaziv(), temp.getKategorija(), temp.getPitanja()));
             novi = false;*/
             Intent intent = new Intent(KvizoviAkt.this, IgrajKvizAkt.class);
-            intent.putExtra("kviz", filtriranaLista.get(mPosition));
+            Kviz kviz=filtriranaLista.get(mPosition);
+            ArrayList<Pitanje> pitanja=kviz.getPitanja();
+            for(int i=0;i<pitanja.size();i++){
+                if(pitanja.get(i).getNaziv().equals("Dodaj Pitanje")){
+                    pitanja.remove(i);
+                    i--;
+                }
+            }
+            kviz.setPitanja(pitanja);
+            intent.putExtra("kviz", kviz);
             startActivityForResult(intent,5);
         } else {
             //dodaj kviz

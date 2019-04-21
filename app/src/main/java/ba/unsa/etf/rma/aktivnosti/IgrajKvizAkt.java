@@ -14,6 +14,8 @@ import ba.unsa.etf.rma.klase.Kviz;
 public class IgrajKvizAkt extends AppCompatActivity implements InformacijeFrag.OnFragmentInteractionListener, PitanjeFrag.OnFragmentInteractionListener {
 
     private Kviz kviz;
+    private String pitanjeFragTag;
+    private String infoFragTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,22 +23,30 @@ public class IgrajKvizAkt extends AppCompatActivity implements InformacijeFrag.O
         setContentView(R.layout.igraj_kviz_akt);
         Bundle bundle = getIntent().getExtras();
         kviz = (Kviz) bundle.getParcelable("kviz");
-
-        InformacijeFrag informacijeFrag = new InformacijeFrag();
+        InformacijeFrag informacijeFrag =InformacijeFrag.newInstance(kviz);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-// Replace whatever is in the fragment_container view with this fragment,
-// and add the transaction to the back stack so the user can navigate back
-        transaction.replace(R.id.informacijePlace, informacijeFrag);
+        transaction.replace(R.id.informacijePlace, informacijeFrag,"infoFrag");
         transaction.addToBackStack(null);
-// Commit the transaction
         transaction.commit();
 
-        PitanjeFrag pitanjeFrag=PitanjeFrag.newInstance(kviz);
+        PitanjeFrag pitanjeFrag = PitanjeFrag.newInstance(kviz);
         FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-        transaction2.replace(R.id.pitanjePlace, pitanjeFrag);
+        transaction2.replace(R.id.pitanjePlace, pitanjeFrag,"pitFrag");
         transaction2.addToBackStack(null);
         transaction2.commit();
+
+        pitanjeFragTag=pitanjeFrag.getTag();
+        infoFragTag=informacijeFrag.getTag();
+    }
+
+    public void naClick(int position) {
+        PitanjeFrag f = (PitanjeFrag) getSupportFragmentManager().findFragmentByTag(pitanjeFragTag);
+        f.naClick(position);
+    }
+
+    public void zavrsiAkt(){
+        setResult(RESULT_OK);
+        finish();
     }
 
     @Override

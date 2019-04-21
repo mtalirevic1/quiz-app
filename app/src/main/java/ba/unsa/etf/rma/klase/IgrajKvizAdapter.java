@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import ba.unsa.etf.rma.R;
 import ba.unsa.etf.rma.aktivnosti.DodajPitanjeAkt;
+import ba.unsa.etf.rma.aktivnosti.IgrajKvizAkt;
 
 public class IgrajKvizAdapter extends BaseAdapter {
     private Activity activity;
@@ -84,8 +85,8 @@ public class IgrajKvizAdapter extends BaseAdapter {
 
         holder.text.setText(pitanje);
         holder.image.setImageResource(res.getIdentifier("plavikrug", "drawable", "ba.unsa.etf.rma"));
-        if (tacan.equals(pitanje)) holder.text.setTextColor(res.getColor(R.color.colorLabel1));
-        else holder.text.setTextColor(res.getColor(R.color.crna));
+      /*  if (tacan.equals(pitanje)) holder.text.setTextColor(res.getColor(R.color.colorLabel1));
+        else holder.text.setTextColor(res.getColor(R.color.crna));*/
 
         view.setOnClickListener(new IgrajKvizAdapter.OnItemClickListener(position));
 
@@ -101,8 +102,8 @@ public class IgrajKvizAdapter extends BaseAdapter {
 
         @Override
         public void onClick(View arg0) {
-          /*  DodajPitanjeAkt sct = (DodajPitanjeAkt) activity;
-            sct.onListItemClick(mPosition);*/
+            IgrajKvizAkt sct = (IgrajKvizAkt) activity;
+            sct.naClick(mPosition);
         }
     }
 }
