@@ -1,51 +1,49 @@
 package ba.unsa.etf.rma.fragmenti;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
-import ba.unsa.etf.rma.R;
+import java.util.ArrayList;
+import java.util.Collections;
 
-public class InformacijeFrag extends Fragment {
+import ba.unsa.etf.rma.R;
+import ba.unsa.etf.rma.aktivnosti.IgrajKvizAkt;
+import ba.unsa.etf.rma.klase.BlueListAdapter;
+import ba.unsa.etf.rma.klase.IgrajKvizAdapter;
+import ba.unsa.etf.rma.klase.Kviz;
+import ba.unsa.etf.rma.klase.Pitanje;
+
+
+public class PitanjeFrag extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private String mParam1;
-    private String mParam2;
     private OnFragmentInteractionListener mListener;
 
-    private TextView infNazivKviza;
-    private TextView infBrojTacnihPitanja;
-    private TextView infBrojPreostalihPitanja;
-    private TextView infProcenatTacni;
+    private TextView tekstPitanja;
+    private ListView odgovoriPitanja;
+    private IgrajKvizAdapter igrajKvizAdapter;
 
+    private Kviz kviz;
+    private ArrayList<String> odgovori;
+    private String tacan;
 
-    private Button btnKraj;
-
-    public InformacijeFrag() {
-        // Required empty public constructor
+    public PitanjeFrag() {
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment InformacijeFrag.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static InformacijeFrag newInstance(String param1, String param2) {
-        InformacijeFrag fragment = new InformacijeFrag();
+    public static PitanjeFrag newInstance(Kviz kviz) {
+        PitanjeFrag fragment = new PitanjeFrag();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putParcelable("kviz",kviz);
         fragment.setArguments(args);
         return fragment;
     }
@@ -54,16 +52,34 @@ public class InformacijeFrag extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+           /* mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);*/
+           kviz=getArguments().getParcelable("kviz");
+           odgovori=new ArrayList<>();
+           tacan="";
         }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view= inflater.inflate(R.layout.fragment_pitanje, container, false);
+        odgovoriPitanja=(ListView) view.findViewById(R.id.odgovoriPitanja);
+        tekstPitanja=(TextView) view.findViewById(R.id.tekstPitanja);
 
-        return inflater.inflate(R.layout.fragment_informacije, container, false);
+        Resources res = getResources();
+        Collections.shuffle(kviz.getPitanja());
+        if(kviz.getPitanja().size()>0){
+            odgovori.addAll(kviz.getPitanja().get(0).getOdgovori());
+            tacan=kviz.getPitanja().get(0).getTacan();
+        }
+
+        igrajKvizAdapter = new IgrajKvizAdapter(getActivity(), odgovori, res);
+        odgovoriPitanja.setAdapter(igrajKvizAdapter);
+
+        return view;
     }
 
 

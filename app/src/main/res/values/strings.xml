@@ -20,4 +20,8 @@
     <string name="broj_preostalih">Broj preostalih pitanja</string>
     <string name="procenat_tacnih">Procenat tacnih pitanja</string>
     <string name="broj_tacnih">Broj tacnih pitanja</string>
+    <string name="kraj">Kraj</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

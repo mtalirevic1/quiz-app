@@ -1,69 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fragmenti.InformacijeFrag">
-
-    <TextView
-        android:id="@+id/labelaBrojPreostalihPitanja"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/broj_preostalih"
-
-        />
-
-    <TextView
-        android:id="@+id/labelaBrojTacnihPitanja"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/broj_tacnih"
-
-        />
-
-    <TextView
-        android:id="@+id/labelaProcenatTacni"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/procenat_tacnih"
-
-        />
-
-    <TextView
-        android:id="@+id/infBrojTacnihPitanja"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text=""
-
-        />
-
-    <TextView
-        android:id="@+id/infBrojPreostalihPitanja"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text=""
-
-        />
-
-    <TextView
-        android:id="@+id/infProcenatTacni"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text=""
-
-        />
+    android:layout_height="match_parent">
 
 
-    <TextView
-        android:id="@+id/infNazivKviza"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/naziv_kviza" />
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="0dp"
+        android:layout_height="210dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-</FrameLayout>
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toTopOf="@+id/labela4"
+            app:layout_constraintTop_toTopOf="@+id/labela4">
+
+            <TextView
+                android:id="@+id/infNazivKviza"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="220dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="98dp"
+                android:text=""
+                app:layout_constraintBottom_toTopOf="@+id/btnKraj"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
+                android:id="@+id/infBrojTacnihPitanja"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text=""
+                app:layout_constraintStart_toStartOf="@+id/infNazivKviza"
+                app:layout_constraintTop_toBottomOf="@+id/infNazivKviza" />
+
+            <TextView
+                android:id="@+id/infBrojPreostalihPitanja"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text=""
+                app:layout_constraintStart_toStartOf="@+id/infBrojTacnihPitanja"
+                app:layout_constraintTop_toBottomOf="@+id/infBrojTacnihPitanja" />
+
+            <TextView
+                android:id="@+id/infProcenatTacni"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:text=""
+                app:layout_constraintStart_toStartOf="@+id/infBrojPreostalihPitanja"
+                app:layout_constraintTop_toBottomOf="@+id/infBrojPreostalihPitanja" />
+
+            <Button
+                android:id="@+id/btnKraj"
+                android:layout_width="261dp"
+                android:layout_height="41dp"
+                android:layout_marginStart="67dp"
+                android:layout_marginEnd="67dp"
+                android:layout_marginBottom="32dp"
+                android:text="@string/kraj"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:background="@drawable/buttonshape"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/crvena"
+                app:layout_constraintTop_toBottomOf="@+id/infProcenatTacni"
+                app:layout_constraintVertical_bias="1.0" />
+
+            <TextView
+                android:id="@+id/labela1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="36dp"
+                android:layout_marginTop="16dp"
+                android:text="Naziv kviza:"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/labela2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Broj tacnih pitanja:"
+                app:layout_constraintStart_toStartOf="@+id/labela1"
+                app:layout_constraintTop_toBottomOf="@+id/labela1" />
+
+            <TextView
+                android:id="@+id/labela3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Broj preostalih pitanja:"
+                app:layout_constraintStart_toStartOf="@+id/labela2"
+                app:layout_constraintTop_toBottomOf="@+id/labela2" />
+
+            <TextView
+                android:id="@+id/labela4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:text="Procenat tacnih odgovora:"
+                app:layout_constraintStart_toStartOf="@+id/labela3"
+                app:layout_constraintTop_toBottomOf="@+id/labela3" />
+        </android.support.constraint.ConstraintLayout>
+    </FrameLayout>
+</android.support.constraint.ConstraintLayout>
