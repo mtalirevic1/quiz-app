@@ -5,14 +5,12 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
+
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -20,13 +18,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import ba.unsa.etf.rma.R;
-import ba.unsa.etf.rma.aktivnosti.IgrajKvizAkt;
-import ba.unsa.etf.rma.klase.BlueListAdapter;
 import ba.unsa.etf.rma.klase.IgrajKvizAdapter;
 import ba.unsa.etf.rma.klase.Kviz;
 import ba.unsa.etf.rma.klase.Pitanje;
 
-import static android.app.Activity.RESULT_OK;
 
 
 public class PitanjeFrag extends Fragment {

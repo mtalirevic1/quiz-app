@@ -13,7 +13,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ba.unsa.etf.rma.R;
-import ba.unsa.etf.rma.aktivnosti.DodajPitanjeAkt;
 import ba.unsa.etf.rma.aktivnosti.IgrajKvizAkt;
 
 public class IgrajKvizAdapter extends BaseAdapter {
@@ -85,8 +84,6 @@ public class IgrajKvizAdapter extends BaseAdapter {
 
         holder.text.setText(pitanje);
         holder.image.setImageResource(res.getIdentifier("plavikrug", "drawable", "ba.unsa.etf.rma"));
-      /*  if (tacan.equals(pitanje)) holder.text.setTextColor(res.getColor(R.color.colorLabel1));
-        else holder.text.setTextColor(res.getColor(R.color.crna));*/
 
         view.setOnClickListener(new IgrajKvizAdapter.OnItemClickListener(position));
 
