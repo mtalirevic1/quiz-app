@@ -124,7 +124,6 @@ public class PitanjeFrag extends Fragment {
         final Boolean isCorrect=t;
         if (pitanja.size() == 0) {
             f.updateStats(isCorrect);
-          //  odgovoriPitanja.setEnabled(false);
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -132,13 +131,10 @@ public class PitanjeFrag extends Fragment {
                     odgovori.clear();
                     igrajKvizAdapter.notifyDataSetChanged();
                     tekstPitanja.setText(getString(R.string.kviz_zavrsen));
-                    f.postaviTextPrazno();
-                   // odgovoriPitanja.setEnabled(true);
                 }
             }, 2000);
 
         } else {
-          //  odgovoriPitanja.setEnabled(false);
             f.updateStats(isCorrect);
             handler.postDelayed(new Runnable() {
                 @Override
@@ -150,7 +146,7 @@ public class PitanjeFrag extends Fragment {
                     igrajKvizAdapter.notifyDataSetChanged();
                     tekstPitanja.setText(pitanja.get(0).getTextPitanja());
 
-                 //   odgovoriPitanja.setEnabled(true);
+
                     pitanja.remove(0);
                 }
             }, 2000);
