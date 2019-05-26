@@ -31,8 +31,10 @@ public class KvizoviAkt extends AppCompatActivity {
     private ArrayList<Pitanje> pitanja;
     private ArrayList<String> odgovori;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.kvizovi_akt);
 

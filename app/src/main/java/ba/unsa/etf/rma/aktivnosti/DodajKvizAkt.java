@@ -4,9 +4,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -16,11 +18,23 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.common.collect.Lists;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 
@@ -54,11 +68,13 @@ public class DodajKvizAkt extends AppCompatActivity  {
     private String prvobitno;
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        new KreirajDokumentTask().execute();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dodaj_kviz_akt);
-
         Bundle bundle = getIntent().getExtras();
         kviz = (Kviz) bundle.getParcelable("kviz");
         pos = bundle.getInt("p");
@@ -456,6 +472,169 @@ public class DodajKvizAkt extends AppCompatActivity  {
             adapterMoguca.notifyDataSetChanged();
             adapter.notifyDataSetChanged();
         }
+    }
+
+    public class KreirajDokumentTask extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            GoogleCredential credentials;
+            try{
+                InputStream stream=getResources().openRawResource(R.raw.secret);
+                credentials=GoogleCredential.fromStream(stream).createScoped(Lists.newArrayList("https://www.googleapis.com/auth/datastore"));
+                credentials.refreshToken();
+                String TOKEN=credentials.getAccessToken();
+
+                String urlString = "https://firestore.googleapis.com/v1/projects/rmaprojekat-17749/databases/(default)/documents/Kvizovi/4SPxl1Kpyr4AeychYRE1?access_token=";
+                URL url=new URL(urlString + URLEncoder.encode(TOKEN,"utf-8"));
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                //conn.setRequestMethod("POST");
+                conn.setRequestMethod("PATCH");
+                conn.setRequestProperty("Content-Type", "application/json; utf-8");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoOutput(true);
+
+
+
+                String doc= "{\n" +
+                        "  \"fields\":{\n" +
+                        "    \"idKategorije\":{\n" +
+                        "      \"stringValue\":\"kategorija8\"\n" +
+                        "    },\n" +
+                        "    \"naziv\":{\n" +
+                        "      \"stringValue\":\"kviz1\"\n" +
+                        "      \n" +
+                        "    },\n" +
+                        "    \"pitanja\":{\n" +
+                        "      \"arrayValue\":{\n" +
+                        "        \"values\":[\n" +
+                        "          {\"stringValue\":\"id69\"},\n" +
+                        "          {\"stringValue\":\"id2\"}\n" +
+                        "        ]\n" +
+                        "      }\n" +
+                        "    }\n" +
+                        "  }\n" +
+                        "}";
+
+                /*JSONObject jsonObject=new JSONObject();
+                try {
+                    jsonObject.getJSONObject(doc);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }*/
+
+                try(OutputStream os=conn.getOutputStream()){
+                    byte[] input = doc.getBytes("utf-8");
+                    os.write(input,0,input.length);
+                }
+
+                int code=conn.getResponseCode();
+
+                InputStream is=conn.getInputStream();
+                try(BufferedReader br=new BufferedReader(new InputStreamReader(is,"utf-8"))){
+                    StringBuilder response=new StringBuilder();
+                    String responseLine=null;
+                    while((responseLine=br.readLine())!=null){
+                        response.append(responseLine.trim());
+                    }
+                    Log.d("ODGOVOR",response.toString());
+
+
+                }
+
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    private void pozoviBazu(String kolekcija, String method,Boolean output, String document){
+        GoogleCredential credentials;
+        try{
+            InputStream stream=getResources().openRawResource(R.raw.secret);
+            credentials=GoogleCredential.fromStream(stream).createScoped(Lists.newArrayList("https://www.googleapis.com/auth/datastore"));
+            credentials.refreshToken();
+            String TOKEN=credentials.getAccessToken();
+
+            String urlString = "https://firestore.googleapis.com/v1/projects/rmaprojekat-17749/databases/(default)/documents/"+kolekcija+"?access_token=";
+            URL url=new URL(urlString + URLEncoder.encode(TOKEN,"utf-8"));
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            //conn.setRequestMethod("POST");
+            conn.setRequestMethod(method);
+            conn.setRequestProperty("Content-Type", "application/json; utf-8");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setDoOutput(output);
+
+
+            if(output) {
+
+                String doc = "{\n" +
+                        "  \"fields\":{\n" +
+                        "    \"idKategorije\":{\n" +
+                        "      \"stringValue\":\"kategorija1\"\n" +
+                        "    },\n" +
+                        "    \"naziv\":{\n" +
+                        "      \"stringValue\":\"kviz1\"\n" +
+                        "      \n" +
+                        "    },\n" +
+                        "    \"pitanja\":{\n" +
+                        "      \"arrayValue\":{\n" +
+                        "        \"values\":[\n" +
+                        "          {\"stringValue\":\"id1\"},\n" +
+                        "          {\"stringValue\":\"id2\"}\n" +
+                        "        ]\n" +
+                        "      }\n" +
+                        "    }\n" +
+                        "  }\n" +
+                        "}";
+
+                try(OutputStream os=conn.getOutputStream()){
+                    byte[] input = doc.getBytes("utf-8");
+                    os.write(input,0,input.length);
+                }
+            }
+                /*JSONObject jsonObject=new JSONObject();
+                try {
+                    jsonObject.getJSONObject(doc);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }*/
+
+              /*  try(OutputStream os=conn.getOutputStream()){
+                    byte[] input = doc.getBytes("utf-8");
+                    os.write(input,0,input.length);
+                }*/
+
+            int code=conn.getResponseCode();
+
+            InputStream is=conn.getInputStream();
+            try(BufferedReader br=new BufferedReader(new InputStreamReader(is,"utf-8"))){
+                StringBuilder response=new StringBuilder();
+                String responseLine=null;
+                while((responseLine=br.readLine())!=null){
+                    response.append(responseLine.trim());
+                }
+                Log.d("ODGOVOR",response.toString());
+
+
+            }
+
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void dodajKvizFirestore(Kviz kviz){
+
+    }
+
+    public void dodajMogucePitanjeFirestore(Pitanje pitanje){
+
+    }
+
+    public void dodajPitanjeFirestore(Pitanje pitanje){
+
     }
 
     private void setData() {
