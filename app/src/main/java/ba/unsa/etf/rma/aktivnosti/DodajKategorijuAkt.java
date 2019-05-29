@@ -4,6 +4,7 @@ package ba.unsa.etf.rma.aktivnosti;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,9 +12,13 @@ import android.widget.EditText;
 import com.maltaisn.icondialog.Icon;
 import com.maltaisn.icondialog.IconDialog;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import ba.unsa.etf.rma.R;
+import ba.unsa.etf.rma.klase.BazaTask;
 import ba.unsa.etf.rma.klase.Kategorija;
 
 public class DodajKategorijuAkt extends AppCompatActivity implements IconDialog.Callback {
@@ -68,6 +73,7 @@ public class DodajKategorijuAkt extends AppCompatActivity implements IconDialog.
                     returnIntent.putExtra("ikona",selectedIcons[0].getId());
                     returnIntent.putExtra("kategorija",s);
                     setResult(RESULT_OK, returnIntent);
+                    dodajKategorijuFirebase(s,selectedIcons[0].getId()+"");
                     finish();
                 }
             }
@@ -104,6 +110,27 @@ public class DodajKategorijuAkt extends AppCompatActivity implements IconDialog.
             }
         }
         return false;
+    }
+
+    public void dodajKategorijuFirebase(String naziv, String idIkone){
+        try {
+            JSONObject integerValue=new JSONObject();
+            integerValue.put("integerValue",idIkone);
+
+            JSONObject stringValue=new JSONObject();
+            stringValue.put("stringValue",naziv);
+
+            JSONObject fields=new JSONObject();
+            fields.put("idIkonice",integerValue);
+            fields.put("naziv",stringValue);
+
+            JSONObject jo=new JSONObject();
+            jo.put("fields",fields);
+
+            new BazaTask("Kategorije/"+idIkone, "PATCH", true, jo.toString(), getResources()).execute();
+        } catch (JSONException e){
+
+        }
     }
 
 }
