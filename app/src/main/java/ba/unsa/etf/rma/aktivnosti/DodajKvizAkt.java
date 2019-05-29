@@ -18,10 +18,6 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.common.collect.Lists;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,16 +27,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 
 import ba.unsa.etf.rma.R;
+import ba.unsa.etf.rma.klase.BazaTask;
 import ba.unsa.etf.rma.klase.DodajKvizAdapter;
 import ba.unsa.etf.rma.klase.Kategorija;
 import ba.unsa.etf.rma.klase.Kviz;
@@ -48,7 +39,7 @@ import ba.unsa.etf.rma.klase.NeispravnaDatotekaException;
 import ba.unsa.etf.rma.klase.Pitanje;
 import ba.unsa.etf.rma.klase.PlusListAdapter;
 
-public class DodajKvizAkt extends AppCompatActivity  {
+public class DodajKvizAkt extends AppCompatActivity {
     private ListView lvDodanaPitanja;
     private ListView lvMogucaPitanja;
     private Spinner spKategorije;
@@ -68,21 +59,18 @@ public class DodajKvizAkt extends AppCompatActivity  {
     private ArrayList<String> odg;
     private ArrayList<Kviz> kvizovi;
     private String prvobitno;
-
-
+    private String id;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dodaj_kviz_akt);
         Bundle bundle = getIntent().getExtras();
         kviz = (Kviz) bundle.getParcelable("kviz");
 
-        new KreirajDokumentTask().execute();
+
 
         pos = bundle.getInt("p");
         novi = bundle.getBoolean("novi");
@@ -103,6 +91,14 @@ public class DodajKvizAkt extends AppCompatActivity  {
         kvizovi = bundle.getParcelableArrayList("kvizovi");
         kategorije = bundle.getParcelableArrayList("kategorije");
 
+        id = -1 + "";
+        for (int i = 0; i < kvizovi.size(); i++) {
+            if (kvizovi.get(i).getNaziv().equals(kviz.getNaziv())) {
+                id = i + "";
+                break;
+            }
+        }
+
         for (int i = 0; i < kategorije.size(); i++) {
             if (kategorije.get(i).getNaziv().equals("Svi") || kategorije.get(i).getNaziv().equals("Dodaj kategoriju")) {
                 kategorije.remove(i);
@@ -121,6 +117,7 @@ public class DodajKvizAkt extends AppCompatActivity  {
                 pitanjaKviza.add(pitanjaKviza.size() - 1, kviz.getPitanja().get(i));
             }
         }
+
 
 
         adapter = new DodajKvizAdapter(this, pitanjaKviza, res);
@@ -190,6 +187,20 @@ public class DodajKvizAkt extends AppCompatActivity  {
                     returnIntent.putExtra("novi", novi);
                     returnIntent.putExtra("p", pos);
                     returnIntent.putExtra("kategorije", kategorije);
+
+                    for (Pitanje p : kviz.getPitanja()) {
+                        if (p.getNaziv().equals("Dodaj Pitanje")) {
+                            kviz.getPitanja().remove(p);
+                            break;
+                        }
+                    }
+
+                    if (novi) {
+                        dodajKvizFirestore(kviz, kvizovi.size() + "");
+                    } else {
+                        dodajKvizFirestore(kviz, id);
+                    }
+
                     setResult(RESULT_OK, returnIntent);
                     finish();
                 }
@@ -209,7 +220,11 @@ public class DodajKvizAkt extends AppCompatActivity  {
 
         });
 
-        setData();
+        try {
+            ucitajPitanjaFirestore();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean imaKviz() {
@@ -255,7 +270,7 @@ public class DodajKvizAkt extends AppCompatActivity  {
 
         if (mPosition != pitanjaKviza.size() - 1) {
             //prebaci u moguce
-            mogucaPitanja.add(mogucaPitanja.size() - 1, pitanjaKviza.get(mPosition));
+            mogucaPitanja.add(mogucaPitanja.size(), pitanjaKviza.get(mPosition));
             pitanjaKviza.remove(mPosition);
             adapterMoguca.notifyDataSetChanged();
             adapter.notifyDataSetChanged();
@@ -306,10 +321,11 @@ public class DodajKvizAkt extends AppCompatActivity  {
 
             }
         }
+
     }
 
     private void readFile(Uri uri) {
-      // File file = new File(uri.toString());
+        // File file = new File(uri.toString());
         try {
 
 
@@ -321,11 +337,11 @@ public class DodajKvizAkt extends AppCompatActivity  {
             }
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
-            String line="";
+            String line = "";
 
             String naziv;
-            Kategorija kategorija=new Kategorija();
-            Integer brojPitanja=0;
+            Kategorija kategorija = new Kategorija();
+            Integer brojPitanja = 0;
             ArrayList<Pitanje> pitanja = new ArrayList<>();
 
             try {
@@ -344,11 +360,11 @@ public class DodajKvizAkt extends AppCompatActivity  {
                 throw new NeispravnaDatotekaException("Kviz kojeg importujete već postoji!");
 
             }
-            naziv=red[0];
+            naziv = red[0];
 
             try {
                 brojPitanja = Integer.parseInt(red[2]);
-            }catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 throw new NeispravnaDatotekaException("Datoteka kviza kojeg importujete nema ispravan format!");
             }
             if (brojPitanja <= 0) {
@@ -370,50 +386,50 @@ public class DodajKvizAkt extends AppCompatActivity  {
 
                 red = line.split(",");
 
-                String nazivPitanja=red[0];
-                for(Pitanje p: pitanja){
-                    if(p.getNaziv().equals(nazivPitanja)){
+                String nazivPitanja = red[0];
+                for (Pitanje p : pitanja) {
+                    if (p.getNaziv().equals(nazivPitanja)) {
                         throw new NeispravnaDatotekaException("Kviz nije ispravan postoje dva pitanja sa istim nazivom!");
                     }
                 }
 
-                ArrayList<String> odgovori=new ArrayList<>();
-                Integer brojOdgovora=0,indeksTacnog=-1;
+                ArrayList<String> odgovori = new ArrayList<>();
+                Integer brojOdgovora = 0, indeksTacnog = -1;
                 try {
                     brojOdgovora = Integer.parseInt(red[1]);
-                }catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
                     throw new NeispravnaDatotekaException("Datoteka kviza kojeg importujete nema ispravan format!");
                 }
 
-                if(red.length-3!=brojOdgovora){
+                if (red.length - 3 != brojOdgovora) {
                     throw new NeispravnaDatotekaException("Kviz kojeg importujete ima neispravan broj odgovora!");
                 }
 
                 try {
                     indeksTacnog = Integer.parseInt(red[2]);
-                }catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
                     throw new NeispravnaDatotekaException("Datoteka kviza kojeg importujete nema ispravan format!");
                 }
 
-                if(indeksTacnog<0 || indeksTacnog>=brojOdgovora){
+                if (indeksTacnog < 0 || indeksTacnog >= brojOdgovora) {
                     throw new NeispravnaDatotekaException("Kviz kojeg importujete ima neispravan index tačnog odgovora!");
                 }
 
-                String tacan="";
-                for(int j=0; j<brojOdgovora;j++){
-                    String odgovor=red[j+3];
+                String tacan = "";
+                for (int j = 0; j < brojOdgovora; j++) {
+                    String odgovor = red[j + 3];
 
-                    for(String o: odgovori){
-                        if(o.equals(odgovor)){
+                    for (String o : odgovori) {
+                        if (o.equals(odgovor)) {
                             throw new NeispravnaDatotekaException("Kviz kojeg importujete nije ispravan postoji ponavljanje odgovora!");
                         }
                     }
                     odgovori.add(odgovor);
-                    if(j==indeksTacnog){
-                        tacan=red[j+3];
+                    if (j == indeksTacnog) {
+                        tacan = red[j + 3];
                     }
                 }
-                Pitanje p=new Pitanje(nazivPitanja,nazivPitanja,odgovori,tacan);
+                Pitanje p = new Pitanje(nazivPitanja, nazivPitanja, odgovori, tacan);
                 pitanja.add(p);
             }
 
@@ -423,29 +439,29 @@ public class DodajKvizAkt extends AppCompatActivity  {
                 throw new NeispravnaDatotekaException("Nije moguće zatvoriti datoteku!");
             }
 
-            Boolean imaKategorija=false;
+            Boolean imaKategorija = false;
             for (int i = 0; i < kategorije.size(); i++) {
                 if (kategorije.get(i).getNaziv().equals(kategorija.getNaziv())) {
                     spKategorije.setSelection(i);
-                    imaKategorija=true;
+                    imaKategorija = true;
                     break;
                 }
             }
-            if(!imaKategorija){
-                kategorije.add(kategorije.size()-1,kategorija);
-                spKategorije.setSelection(kategorije.size()-2);
+            if (!imaKategorija) {
+                kategorije.add(kategorije.size() - 1, kategorija);
+                spKategorije.setSelection(kategorije.size() - 2);
                 adapterSp.notifyDataSetChanged();
             }
 
             etNaziv.setText(naziv);
-            for(int i=0;i<pitanjaKviza.size();i++){
-                if(!pitanjaKviza.get(i).getNaziv().equals("Dodaj Pitanje")){
+            for (int i = 0; i < pitanjaKviza.size(); i++) {
+                if (!pitanjaKviza.get(i).getNaziv().equals("Dodaj Pitanje")) {
                     pitanjaKviza.remove(i);
                     i--;
                 }
             }
-            for(Pitanje p: pitanja){
-                pitanjaKviza.add(pitanjaKviza.size()-1,p);
+            for (Pitanje p : pitanja) {
+                pitanjaKviza.add(pitanjaKviza.size() - 1, p);
             }
 
             adapter.notifyDataSetChanged();
@@ -481,151 +497,129 @@ public class DodajKvizAkt extends AppCompatActivity  {
         }
     }
 
-    public class KreirajDokumentTask extends AsyncTask<String, Void, Void> {
 
-        @Override
-        protected Void doInBackground(String... strings) {
-            dodajKvizFirestore(kviz);
-            return null;
-        }
-    }
-
-    private JSONObject pozoviBazu(String kolekcija, String method,Boolean output, String document){
-        GoogleCredential credentials;
-        try{
-            InputStream stream=getResources().openRawResource(R.raw.secret);
-            credentials=GoogleCredential.fromStream(stream).createScoped(Lists.newArrayList("https://www.googleapis.com/auth/datastore"));
-            credentials.refreshToken();
-            String TOKEN=credentials.getAccessToken();
-
-            String urlString = "https://firestore.googleapis.com/v1/projects/rmaprojekat-17749/databases/(default)/documents/"+kolekcija+"?access_token=";
-            URL url=new URL(urlString + URLEncoder.encode(TOKEN,"utf-8"));
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            //conn.setRequestMethod("POST");
-            conn.setRequestMethod(method);
-            conn.setRequestProperty("Content-Type", "application/json; utf-8");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setDoOutput(output);
-
-
-            if(output) {
-
-              /*  String doc = "{\n" +
-                        "  \"fields\":{\n" +
-                        "    \"idKategorije\":{\n" +
-                        "      \"stringValue\":\"kategorija1\"\n" +
-                        "    },\n" +
-                        "    \"naziv\":{\n" +
-                        "      \"stringValue\":\"kviz1\"\n" +
-                        "      \n" +
-                        "    },\n" +
-                        "    \"pitanja\":{\n" +
-                        "      \"arrayValue\":{\n" +
-                        "        \"values\":[\n" +
-                        "          {\"stringValue\":\"id1\"},\n" +
-                        "          {\"stringValue\":\"id2\"}\n" +
-                        "        ]\n" +
-                        "      }\n" +
-                        "    }\n" +
-                        "  }\n" +
-                        "}";*/
-
-                try(OutputStream os=conn.getOutputStream()){
-                    byte[] input = document.getBytes("utf-8");
-                    os.write(input,0,input.length);
-                }
-            }
-                /*JSONObject jsonObject=new JSONObject();
-                try {
-                    jsonObject.getJSONObject(doc);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }*/
-
-              /*  try(OutputStream os=conn.getOutputStream()){
-                    byte[] input = doc.getBytes("utf-8");
-                    os.write(input,0,input.length);
-                }*/
-
-            int code=conn.getResponseCode();
-
-            InputStream is=conn.getInputStream();
-            try(BufferedReader br=new BufferedReader(new InputStreamReader(is,"utf-8"))){
-                StringBuilder response=new StringBuilder();
-                String responseLine=null;
-                while((responseLine=br.readLine())!=null){
-                    response.append(responseLine.trim());
-                }
-                Log.d("ODGOVOR",response.toString());
-
-
-            }
-
-        }catch(IOException e){
-            e.printStackTrace();
-            return null;
-        }
-        return null;
-    }
-
-    public void dodajKvizFirestore(Kviz kviz){
+    public void dodajKvizFirestore(Kviz kviz, String id) {
         try {
-        JSONObject jo=new JSONObject();
+            JSONObject jo = new JSONObject();
 
-        JSONObject fields=new JSONObject();
+            JSONObject fields = new JSONObject();
 
-        JSONObject kategorija=new JSONObject();
-        kategorija.put("stringValue",kviz.getKategorija());
+            JSONObject kategorija = new JSONObject();
+            kategorija.put("stringValue", kviz.getKategorija());
 
-        JSONObject naziv=new JSONObject();
-        naziv.put("stringValue",kviz.getNaziv());
+            JSONObject naziv = new JSONObject();
+            naziv.put("stringValue", kviz.getNaziv());
 
-        fields.put("idKategorije",kategorija);
-        fields.put("naziv",naziv);
+            fields.put("idKategorije", kategorija);
+            fields.put("naziv", naziv);
 
-        JSONObject arrayValue=new JSONObject();
+            JSONObject arrayValue = new JSONObject();
 
-        JSONArray values=new JSONArray();
-        JSONObject pit=new JSONObject();
-        for(Pitanje p: kviz.getPitanja()){
-            pit.put("stringValue",p.getNaziv());
-        }
-        values.put(pit);
-        arrayValue.put("values",values);
+            JSONArray values = new JSONArray();
+            for (Pitanje p : kviz.getPitanja()) {
+                JSONObject pit = new JSONObject();
+                pit.put("stringValue", p.getNaziv());
+                values.put(pit);
+            }
 
-        JSONObject pitanja=new JSONObject();
-        pitanja.put("arrayValue",arrayValue);
+            arrayValue.put("values", values);
 
-        fields.put("pitanja",pitanja);
+            JSONObject pitanja = new JSONObject();
+            pitanja.put("arrayValue", arrayValue);
 
-        jo.put("fields",fields);
+            fields.put("pitanja", pitanja);
 
-         pozoviBazu("Kvizovi/3","PATCH",true,jo.toString());
-             Log.d("KVIZ",jo.toString());
+            jo.put("fields", fields);
+
+            new BazaTask("Kvizovi/" + id, "PATCH", true, jo.toString(), getResources()).execute();
+            Log.d("KVIZ", jo.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
 
 
+    public void izbaciPitanjeFirestore(String id) {
+        new BazaTask("Pitanja/" + id, "DELETE", false, "", getResources()).execute();
+    }
+
+    public void ucitajPitanjaFirestore() throws JSONException {
+
+        class TaskPost extends BazaTask{
+
+            public TaskPost(String kolekcija, String method, Boolean output, String document, Resources res) {
+                super(kolekcija, method, output, document, res);
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                try {
+                    String odgovor = this.getOdgovor();
+
+                    ArrayList<Pitanje> pitanja = new ArrayList<>();
+
+
+                    JSONObject object = new JSONObject(odgovor);
+                    JSONArray documents = object.getJSONArray("documents");
+
+
+                    for (int i = 0; i < documents.length(); i++) {
+
+                        Pitanje pitanje = new Pitanje();
+
+                        JSONObject doc = documents.getJSONObject(i);
+
+                        JSONObject fields = new JSONObject(doc.getString("fields"));
+
+                        JSONObject naziv = new JSONObject(fields.getString("naziv"));
+                        pitanje.setNaziv(naziv.getString("stringValue"));
+                        pitanje.setTextPitanja(naziv.getString("stringValue"));
+
+                        JSONObject indexTacnog = new JSONObject(fields.getString("indexTacnog"));
+                        Integer index = Integer.parseInt(indexTacnog.getString("integerValue"));
+
+                        JSONObject odgovori = new JSONObject(fields.getString("odgovori"));
+                        JSONObject arrayValue = new JSONObject(odgovori.getString("arrayValue"));
+                        JSONArray values = arrayValue.getJSONArray("values");
+
+
+                        for (int j = 0; j < values.length(); j++) {
+                            JSONObject odg = values.getJSONObject(j);
+                            if (index == j) {
+                                pitanje.setTacan(odg.getString("stringValue"));
+                            }
+                            pitanje.getOdgovori().add(odg.getString("stringValue"));
+                        }
+                        pitanja.add(pitanje);
+                    }
+                    //Log.d("PROBA",documents.toString());
+                    for (int i = 0; i < pitanja.size(); i++) {
+                        for (Pitanje p : kviz.getPitanja()) {
+                            if (pitanja.get(i).getNaziv().equals(p.getNaziv())) {
+                                pitanja.remove(i);
+                                i--;
+                                break;
+                            }
+                        }
+                    }
+                    mogucaPitanja.addAll(pitanja);
+                    adapterMoguca.notifyDataSetChanged();
+                    Log.d("DOSLO DO KRAJA","KAKO");
+                }
+                catch (JSONException e){
+
+                }
+            }
+        }
+
+        TaskPost task = new TaskPost("Pitanja", "GET", false, "", getResources());
+        task.execute();
 
     }
 
-    public void dodajMogucePitanjeFirestore(Pitanje pitanje){
 
-    }
+    private void setData() throws JSONException {
 
-    public void dodajPitanjeFirestore(Pitanje pitanje){
-
-    }
-
-    private void setData() {
-        odg = new ArrayList<>();
-        odg.add("da");
-        odg.add("ne");
-        mogucaPitanja.add(new Pitanje("P14", "Sta je sta", odg, "da"));
-        mogucaPitanja.add(new Pitanje("P22", "Sta je ovo", odg, "ne"));
-        mogucaPitanja.add(new Pitanje("P23", "Sta je nesto", odg, "ne"));
-        adapterMoguca.notifyDataSetChanged();
     }
 
 }
