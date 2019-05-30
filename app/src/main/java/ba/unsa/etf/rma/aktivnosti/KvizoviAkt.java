@@ -10,9 +10,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import ba.unsa.etf.rma.R;
+import ba.unsa.etf.rma.klase.BazaTask;
 import ba.unsa.etf.rma.klase.Kategorija;
 import ba.unsa.etf.rma.klase.Kviz;
 import ba.unsa.etf.rma.klase.KvizoviAktAdapter;
@@ -91,7 +96,7 @@ public class KvizoviAkt extends AppCompatActivity {
             }
         });
 
-       lvKvizovi.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        lvKvizovi.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 onLongItemClick(position);
@@ -140,12 +145,11 @@ public class KvizoviAkt extends AppCompatActivity {
             if (resultCode == RESULT_CANCELED) {
                 adapter.notifyDataSetChanged();
             }
-        }
-        else if( requestCode==5){
-            if(resultCode==RESULT_OK){
+        } else if (requestCode == 5) {
+            if (resultCode == RESULT_OK) {
 
             }
-            if(resultCode==RESULT_CANCELED){
+            if (resultCode == RESULT_CANCELED) {
 
             }
         }
@@ -179,9 +183,9 @@ public class KvizoviAkt extends AppCompatActivity {
         if (mPosition == filtriranaLista.size() - 1) {
             return;
         }
-        Boolean novi=false;
-        Kviz kviz=filtriranaLista.get(mPosition);
-        Integer pos=mPosition;
+        Boolean novi = false;
+        Kviz kviz = filtriranaLista.get(mPosition);
+        Integer pos = mPosition;
         Intent intent = new Intent(KvizoviAkt.this, DodajKvizAkt.class);
         intent.putExtra("kategorije", kategorije);
         intent.putExtra("kviz", kviz);
@@ -203,17 +207,17 @@ public class KvizoviAkt extends AppCompatActivity {
             intent.putExtra("kviz", new Kviz(temp.getNaziv(), temp.getKategorija(), temp.getPitanja()));
             novi = false;*/
             Intent intent = new Intent(KvizoviAkt.this, IgrajKvizAkt.class);
-            Kviz kviz=filtriranaLista.get(mPosition);
-            ArrayList<Pitanje> pitanja=kviz.getPitanja();
-            for(int i=0;i<pitanja.size();i++){
-                if(pitanja.get(i).getNaziv().equals("Dodaj Pitanje")){
+            Kviz kviz = filtriranaLista.get(mPosition);
+            ArrayList<Pitanje> pitanja = kviz.getPitanja();
+            for (int i = 0; i < pitanja.size(); i++) {
+                if (pitanja.get(i).getNaziv().equals("Dodaj Pitanje")) {
                     pitanja.remove(i);
                     i--;
                 }
             }
             kviz.setPitanja(pitanja);
             intent.putExtra("kviz", kviz);
-            startActivityForResult(intent,5);
+            startActivityForResult(intent, 5);
         } else {
             //dodaj kviz
             Intent intent = new Intent(KvizoviAkt.this, DodajKvizAkt.class);
@@ -226,6 +230,115 @@ public class KvizoviAkt extends AppCompatActivity {
             startActivityForResult(intent, 1);
         }
 
+    }
+
+    public void ucitajKvizoveFirestore() {
+        try {
+            JSONObject jo = new JSONObject();
+            JSONArray fields = new JSONArray();
+
+            JSONObject idKat = new JSONObject();
+            idKat.put("fieldPath", "idKategorije");
+
+            JSONObject naz = new JSONObject();
+            naz.put("fieldPath", "naziv");
+
+            JSONObject pit = new JSONObject();
+            naz.put("fieldPath", "pitanja");
+
+            fields.put(naz);
+            fields.put(idKat);
+            fields.put(pit);
+
+            JSONObject select = new JSONObject();
+            select.put("fields", fields);
+
+            JSONArray from = new JSONArray();
+            JSONObject col = new JSONObject();
+            col.put("collectionId", "Kvizovi");
+            from.put(col);
+
+            JSONObject structuredQuery = new JSONObject();
+            structuredQuery.put("select", select);
+            structuredQuery.put("limit", 1000);
+            structuredQuery.put("from", from);
+
+            jo.put("structuredQuery", structuredQuery);
+            TaskPost task = new TaskPost("query", "POST", false, jo.toString(), getResources());
+            task.execute();
+        } catch (JSONException e) {
+
+        }
+    }
+
+    public void ucitajKvizoveKategorijeFirestore() {
+
+    }
+
+    class TaskPost extends BazaTask {
+
+        public TaskPost(String kolekcija, String method, Boolean output, String document, Resources res) {
+            super(kolekcija, method, output, document, res);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            try {
+                String odgovor = this.getOdgovor();
+
+                ArrayList<Kviz> kvizovi = new ArrayList<>();
+
+
+                JSONObject object = new JSONObject(odgovor);
+                JSONArray documents = object.getJSONArray("documents");
+
+
+                for (int i = 0; i < documents.length(); i++) {
+
+                    Kviz kviz = new Kviz();
+
+                    JSONObject doc = documents.getJSONObject(i);
+
+                    JSONObject fields = new JSONObject(doc.getString("fields"));
+
+                    JSONObject naziv = new JSONObject(fields.getString("naziv"));
+                    kviz.setNaziv(naziv.getString("stringValue"));
+
+                    JSONObject idKategorije = new JSONObject(fields.getString("idKategorije"));
+                    String kat = idKategorije.getString("stringValue");
+                    for (Kategorija k : kategorije) {
+                        if (kat.equals(k.getId())) {
+                            kviz.setKategorija(k);
+                            break;
+                        }
+                    }
+
+
+                    JSONObject pit = new JSONObject(fields.getString("pitanja"));
+                    JSONObject arrayValue = new JSONObject(pit.getString("arrayValue"));
+                    JSONArray values = arrayValue.getJSONArray("values");
+
+
+                    for (int j = 0; j < values.length(); j++) {
+                        JSONObject pita = values.getJSONObject(j);
+                        for (Pitanje p : pitanja) {
+                            if (pita.getString("stringValue").equals(p.getNaziv())) {
+                                kviz.getPitanja().add(p);
+                                break;
+                            }
+                        }
+                    }
+                    kvizovi.add(kviz);
+                }
+
+                for(Kviz k: kvizovi){
+                    filtriranaLista.add(filtriranaLista.size()-1,k);
+                }
+
+            } catch (JSONException e) {
+
+            }
+        }
     }
 
 

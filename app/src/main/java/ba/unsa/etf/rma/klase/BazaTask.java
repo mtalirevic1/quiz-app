@@ -49,8 +49,12 @@ public class BazaTask extends AsyncTask<String, Void, Void> {
             credentials=GoogleCredential.fromStream(stream).createScoped(Lists.newArrayList("https://www.googleapis.com/auth/datastore"));
             credentials.refreshToken();
             String TOKEN=credentials.getAccessToken();
-
-            String urlString = "https://firestore.googleapis.com/v1/projects/rmaprojekat-17749/databases/(default)/documents/"+kolekcija+"?access_token=";
+            String urlString;
+            if(!kolekcija.equals("query")) {
+                urlString = "https://firestore.googleapis.com/v1/projects/rmaprojekat-17749/databases/(default)/documents/" + kolekcija + "?access_token=";
+            } else{
+                urlString = "https://firestore.googleapis.com/v1/projects/rmaprojekat-17749/databases/(default)/documents:runQuery?access_token=";
+            }
             URL url=new URL(urlString + URLEncoder.encode(TOKEN,"utf-8"));
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();;
             conn.setRequestMethod(method);

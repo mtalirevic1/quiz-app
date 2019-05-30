@@ -592,7 +592,6 @@ public class DodajKvizAkt extends AppCompatActivity {
                         }
                         pitanja.add(pitanje);
                     }
-                    //Log.d("PROBA",documents.toString());
                     for (int i = 0; i < pitanja.size(); i++) {
                         for (Pitanje p : kviz.getPitanja()) {
                             if (pitanja.get(i).getNaziv().equals(p.getNaziv())) {
@@ -604,7 +603,6 @@ public class DodajKvizAkt extends AppCompatActivity {
                     }
                     mogucaPitanja.addAll(pitanja);
                     adapterMoguca.notifyDataSetChanged();
-                    Log.d("DOSLO DO KRAJA","KAKO");
                 }
                 catch (JSONException e){
 
@@ -617,6 +615,11 @@ public class DodajKvizAkt extends AppCompatActivity {
 
     }
 
+    public void ucitajKvizoveKategorije(){
+        JSONObject jo=new JSONObject();
+
+        new BazaTask("","POST",false,"query",getResources());
+    }
 
     private void setData() throws JSONException {
 

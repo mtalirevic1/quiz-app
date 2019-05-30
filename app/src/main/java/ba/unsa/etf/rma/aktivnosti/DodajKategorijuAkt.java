@@ -1,7 +1,9 @@
 package ba.unsa.etf.rma.aktivnosti;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -66,8 +68,8 @@ public class DodajKategorijuAkt extends AppCompatActivity implements IconDialog.
                 } else {
                     etIkona.setBackgroundColor(getResources().getColor(R.color.colorLabel1));
                 }
-
-                if(imaIme() && imaId() && !imaKategoriju(etIkona.getText().toString())){
+                Boolean imaKategoriju=imaKategoriju(etIkona.getText().toString());
+                if(imaIme() && imaId() && !imaKategoriju){
                     Intent returnIntent = new Intent();
                     String s=etNaziv.getText().toString();
                     returnIntent.putExtra("ikona",selectedIcons[0].getId());
@@ -75,6 +77,16 @@ public class DodajKategorijuAkt extends AppCompatActivity implements IconDialog.
                     setResult(RESULT_OK, returnIntent);
                     dodajKategorijuFirebase(s,selectedIcons[0].getId()+"");
                     finish();
+                } else if(imaKategoriju){
+                    new AlertDialog.Builder(btnDodajKategoriju.getContext())
+                            .setTitle("Greška")
+                            .setMessage("Unesena kategorija već postoji!")
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .show();
                 }
             }
         });
