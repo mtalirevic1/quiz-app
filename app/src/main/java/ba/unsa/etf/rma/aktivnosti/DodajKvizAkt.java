@@ -505,7 +505,7 @@ public class DodajKvizAkt extends AppCompatActivity {
             JSONObject fields = new JSONObject();
 
             JSONObject kategorija = new JSONObject();
-            kategorija.put("stringValue", kviz.getKategorija());
+            kategorija.put("stringValue", kviz.getKategorija().getId());
 
             JSONObject naziv = new JSONObject();
             naziv.put("stringValue", kviz.getNaziv());
@@ -615,11 +615,6 @@ public class DodajKvizAkt extends AppCompatActivity {
 
     }
 
-    public void ucitajKvizoveKategorije(){
-        JSONObject jo=new JSONObject();
-
-        new BazaTask("","POST",false,"query",getResources());
-    }
 
     private void setData() throws JSONException {
 

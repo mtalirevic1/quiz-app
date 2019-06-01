@@ -18,6 +18,7 @@ import android.content.res.Resources;
 
 import ba.unsa.etf.rma.R;
 
+
 public class BazaTask extends AsyncTask<String, Void, Void> {
 
     private String kolekcija;
@@ -26,9 +27,18 @@ public class BazaTask extends AsyncTask<String, Void, Void> {
     private String document;
     private Resources res;
     private String odgovor;
+    private String rezultat;
 
     public String getOdgovor() {
         return odgovor;
+    }
+
+    public String getKolekcija(){
+        return kolekcija;
+    }
+
+    public String getRezultat(){
+        return rezultat;
     }
 
     public BazaTask(String kolekcija, String method, Boolean output, String document, Resources res) {
@@ -38,7 +48,28 @@ public class BazaTask extends AsyncTask<String, Void, Void> {
         this.document = document;
         this.res = res;
         this.odgovor = "";
+        this.rezultat="";
     }
+
+    public String convertStreamToString(InputStream is) {
+        BufferedReader reader = new BufferedReader(new
+                InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        try {
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+        } catch (IOException e) {
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+            }
+        }
+        return sb.toString();
+    }
+
 
     @Override
     protected Void doInBackground(String... strings) {
@@ -50,18 +81,25 @@ public class BazaTask extends AsyncTask<String, Void, Void> {
             credentials.refreshToken();
             String TOKEN=credentials.getAccessToken();
             String urlString;
-            if(!kolekcija.equals("query")) {
+            Boolean query=kolekcija.equals("query");
+            if(!query) {
                 urlString = "https://firestore.googleapis.com/v1/projects/rmaprojekat-17749/databases/(default)/documents/" + kolekcija + "?access_token=";
             } else{
                 urlString = "https://firestore.googleapis.com/v1/projects/rmaprojekat-17749/databases/(default)/documents:runQuery?access_token=";
             }
             URL url=new URL(urlString + URLEncoder.encode(TOKEN,"utf-8"));
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();;
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(method);
+
             conn.setRequestProperty("Content-Type", "application/json; utf-8");
             conn.setRequestProperty("Accept", "application/json");
-            conn.setDoOutput(output);
 
+            if(query){
+                conn.setDoInput(true);
+            }
+            else {
+                conn.setDoOutput(output);
+            }
 
             if(output) {
                 try(OutputStream os=conn.getOutputStream()){
@@ -72,15 +110,23 @@ public class BazaTask extends AsyncTask<String, Void, Void> {
             int code=conn.getResponseCode();
 
             InputStream is=conn.getInputStream();
-            try(BufferedReader br=new BufferedReader(new InputStreamReader(is,"utf-8"))){
-                StringBuilder response=new StringBuilder();
-                String responseLine=null;
-                while((responseLine=br.readLine())!=null){
-                    response.append(responseLine.trim());
-                }
-                Log.d("ODGOVOR",response.toString());
-                odgovor=response.toString();
 
+            if(query){
+                rezultat=convertStreamToString(is);
+                Log.d("REZULTATQUERY",rezultat);
+            }
+
+            if(!query) {
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(is, "utf-8"))) {
+                    StringBuilder response = new StringBuilder();
+                    String responseLine = null;
+                    while ((responseLine = br.readLine()) != null) {
+                        response.append(responseLine.trim());
+                    }
+                    Log.d("ODGOVOR", response.toString());
+                    odgovor = response.toString();
+
+                }
             }
 
         }catch(IOException e){

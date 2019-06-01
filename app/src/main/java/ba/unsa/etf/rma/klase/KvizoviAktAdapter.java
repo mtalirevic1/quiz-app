@@ -77,12 +77,15 @@ public class KvizoviAktAdapter extends BaseAdapter {
 
         if (position != data.size() - 1) {
             holder.text.setText(kviz.getNaziv());
-            Integer id;
+            Integer id=-1;
             try {
                 id = Integer.parseInt(kviz.getKategorija().getId());
             } catch (NumberFormatException e) {
                 id = -1;
             }
+           // catch (NullPointerException e){ //todo
+
+        //    }
             if (id.equals(-1)) {
                 holder.image.setImageResource(res.getIdentifier("plavikrug", "drawable", "ba.unsa.etf.rma"));
             } else {
