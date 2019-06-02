@@ -60,13 +60,15 @@ public class KvizoviAkt extends AppCompatActivity {
 
         Resources res = getResources();
         unosi = new ArrayList<>();
-        adapter = new KvizoviAktAdapter(this, filtriranaLista, res);
+
 
         try {
             ucitajSveFirestore();
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        adapter = new KvizoviAktAdapter(this, filtriranaLista, res);
 
         spPostojeceKategorije.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -288,8 +290,8 @@ public class KvizoviAkt extends AppCompatActivity {
             try {
                 String odgovor = "";
                 if (getKolekcija().equals("query")) {
-                    odgovor= "{ \"documents\": " + getRezultat() + "}";
-                    Log.d("REZULTAT",odgovor);
+                    odgovor = "{ \"documents\": " + getRezultat() + "}";
+                    Log.d("REZULTAT", odgovor);
                 } else {
                     odgovor = this.getOdgovor();
                 }
@@ -306,8 +308,15 @@ public class KvizoviAkt extends AppCompatActivity {
                     Kviz kviz = new Kviz();
 
                     JSONObject doc = documents.getJSONObject(i);
+                    JSONObject dok;
+                    JSONObject fields;
 
-                    JSONObject fields = new JSONObject(doc.getString("fields"));
+                    if (getKolekcija().equals("query")) {
+                        dok = new JSONObject(doc.getString("document"));
+                        fields = new JSONObject(dok.getString("fields"));
+                    } else {
+                        fields = new JSONObject(doc.getString("fields"));
+                    }
 
                     JSONObject naziv = new JSONObject(fields.getString("naziv"));
                     kviz.setNaziv(naziv.getString("stringValue"));
@@ -344,7 +353,7 @@ public class KvizoviAkt extends AppCompatActivity {
                     kvizovi.add(kviz);
                 }
                 resetujListu(filtriranaLista);
-                Log.d("CHECK","DOLAZI LI OVDJE IZA QUERYJA");
+                Log.d("CHECK", "DOLAZI LI OVDJE IZA QUERYJA");
                 for (Kviz k : kvizovi) {
                     filtriranaLista.add(filtriranaLista.size() - 1, k);//todo
                     Log.d("KVIZ", k.getNaziv() + " " + k.getKategorija() + "\n");
@@ -463,8 +472,8 @@ public class KvizoviAkt extends AppCompatActivity {
             field.put("fieldPath", "idKategorije");
             JSONObject fieldFilter = new JSONObject();
             fieldFilter.put("field", field);
-            fieldFilter.put("op","EQUAL");
-            fieldFilter.put("value",value);
+            fieldFilter.put("op", "EQUAL");
+            fieldFilter.put("value", value);
             JSONObject where = new JSONObject();
             where.put("fieldFilter", fieldFilter);
 
