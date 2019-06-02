@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -288,7 +287,6 @@ public class KvizoviAkt extends AppCompatActivity {
                 String odgovor = "";
                 if (getKolekcija().equals("query")) {
                     odgovor = "{ \"documents\": " + getRezultat() + "}";
-                    Log.d("REZULTAT", odgovor);
                 } else {
                     odgovor = this.getOdgovor();
                 }
@@ -350,10 +348,8 @@ public class KvizoviAkt extends AppCompatActivity {
                     kvizovi.add(kviz);
                 }
                 resetujListu(filtriranaLista);
-                Log.d("CHECK", "DOLAZI LI OVDJE IZA QUERYJA");
                 for (Kviz k : kvizovi) {
                     filtriranaLista.add(filtriranaLista.size() - 1, k);//todo
-                    Log.d("KVIZ", k.getNaziv() + " " + k.getKategorija() + "\n");
                 }
                 adapter.notifyDataSetChanged();
 
@@ -483,7 +479,6 @@ public class KvizoviAkt extends AppCompatActivity {
 
             jo.put("structuredQuery", structuredQuery);
 
-            Log.d("JSON", jo.toString());
             TaskPost task = new TaskPost("query", "POST", true, jo.toString(), getResources());
             task.execute();
 
@@ -492,34 +487,4 @@ public class KvizoviAkt extends AppCompatActivity {
         }
     }
 
-
-    public void setData() throws JSONException {
-       /* odgovori = new ArrayList<>();
-        odgovori.add("da");
-        odgovori.add("ne");
-
-        pitanja = new ArrayList<>();
-        pitanja.add(new Pitanje("P1", "Sta je sta", odgovori, "da"));
-        pitanja.add(new Pitanje("P2", "Sta je nesto", odgovori, "ne"));
-        pitanja.add(new Pitanje("P3", "Sta je ista", odgovori, "da"));
-
-
-        unosi.add(0, new Kviz("Kviz 1", new Kategorija("Neka", ""), new ArrayList<Pitanje>(pitanja)));
-        filtriranaLista.add(0, new Kviz("Kviz 1", new Kategorija("Neka", ""), new ArrayList<Pitanje>(pitanja)));
-
-        unosi.add(0, new Kviz("Kviz 2", new Kategorija("Neka2", ""), new ArrayList<Pitanje>(pitanja)));
-        filtriranaLista.add(0, new Kviz("Kviz 2", new Kategorija("Neka2", ""), new ArrayList<Pitanje>(pitanja)));
-
-        unosi.add(0, new Kviz("Kviz 3", new Kategorija("Neka3", ""), new ArrayList<Pitanje>(pitanja)));
-        filtriranaLista.add(0, new Kviz("Kviz 3", new Kategorija("Neka3", ""), new ArrayList<Pitanje>(pitanja)));
-
-        kategorije.add(new Kategorija("Neka", "Neka"));
-        kategorije.add(new Kategorija("Neka2", "Neka2"));
-        kategorije.add(new Kategorija("Neka3", "Neka3"));
-
-        adapter.notifyDataSetChanged();
-        adapterSp.notifyDataSetChanged();*/
-
-
-    }
 }

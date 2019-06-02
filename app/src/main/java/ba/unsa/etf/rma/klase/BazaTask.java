@@ -123,7 +123,6 @@ public class BazaTask extends AsyncTask<String, Void, Void> {
                     while ((responseLine = br.readLine()) != null) {
                         response.append(responseLine.trim());
                     }
-                    Log.d("ODGOVOR", response.toString());
                     odgovor = response.toString();
 
                 }

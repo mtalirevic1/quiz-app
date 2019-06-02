@@ -15,7 +15,6 @@ import java.util.Collections;
 
 import ba.unsa.etf.rma.R;
 import ba.unsa.etf.rma.klase.HighScore;
-import ba.unsa.etf.rma.klase.Kviz;
 import ba.unsa.etf.rma.klase.RangListaAdapter;
 
 

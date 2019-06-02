@@ -4,11 +4,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -531,7 +530,6 @@ public class DodajKvizAkt extends AppCompatActivity {
             jo.put("fields", fields);
 
             new BazaTask("Kvizovi/" + id, "PATCH", true, jo.toString(), getResources()).execute();
-            Log.d("KVIZ", jo.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -1,6 +1,4 @@
 package ba.unsa.etf.rma.aktivnosti;
-
-import android.support.v4.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -9,7 +7,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.widget.EditText;
 
 
@@ -183,7 +180,6 @@ public class IgrajKvizAkt extends AppCompatActivity implements InformacijeFrag.O
             nazivKviza.put("stringValue",kviz.getNaziv());
             fields.put("nazivKviza",nazivKviza);
             jo.put("fields",fields);
-            Log.d("RANG",jo.toString());
             new BazaTask("Rangliste","POST",true,jo.toString(),getResources()).execute();
 
         }catch (JSONException e){

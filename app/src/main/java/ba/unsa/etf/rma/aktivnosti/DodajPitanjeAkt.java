@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -174,7 +173,6 @@ public class DodajPitanjeAkt extends AppCompatActivity {
 
             jo.put("fields",fields);
             new BazaTask("Pitanja/"+pitanje.getNaziv(),"PATCH",true,jo.toString(),getResources()).execute();
-            Log.d("PITANJE",jo.toString());
 
         } catch (JSONException e) {
             e.printStackTrace();
