@@ -83,42 +83,15 @@ public class KvizoviAktAdapter extends BaseAdapter {
             } catch (NumberFormatException e) {
                 id = -1;
             }
-           // catch (NullPointerException e){ //todo
 
-        //    }
-            if (id.equals(-1)) {
-                holder.image.setImageResource(res.getIdentifier("plavikrug", "drawable", "ba.unsa.etf.rma"));
-            } else {
-                holder.image.setIcon(id);
-            }
+            holder.image.setIcon(id);
+
         } else {
             holder.text.setText("Dodaj Kviz");
             holder.image.setImageResource(res.getIdentifier("zeleniplus", "drawable", "ba.unsa.etf.rma"));
         }
 
-      //  view.setOnClickListener(new OnItemClickListener(position));
-
         return view;
     }
 
-   /* private class OnItemClickListener implements View.OnClickListener, View.OnLongClickListener {
-        private int mPosition;
-
-        OnItemClickListener(int position) {
-            mPosition = position;
-        }
-
-        @Override
-        public void onClick(View arg0) {
-            KvizoviAkt sct = (KvizoviAkt) activity;
-            sct.onItemClick(mPosition);
-        }
-
-        @Override
-        public boolean onLongClick(View v) {
-            KvizoviAkt sct=(KvizoviAkt) activity;
-            sct.onLongItemClick(mPosition);
-            return false;
-        }
-    }*/
 }

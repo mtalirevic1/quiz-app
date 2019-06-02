@@ -69,16 +69,13 @@ public class KvizoviAkt extends AppCompatActivity {
         }
 
         adapter = new KvizoviAktAdapter(this, filtriranaLista, res);
+        lvKvizovi.setAdapter(adapter);
 
         spPostojeceKategorije.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 Kategorija kategorija = kategorije.get(position);
-                if (kategorija.getNaziv().equals("Svi")) { //todo ovdje mijenjati da pozove query
-                   /* for (Kviz k : unosi) {
-                        filtriranaLista.add(filtriranaLista.size() - 1, k);
-                        adapter.notifyDataSetChanged();
-                    }*/
+                if (kategorija.getNaziv().equals("Svi")) {
                     ucitajKvizoveFirestore();
                 } else {
                     ucitajKvizoveKategorijeFirestore();
@@ -91,7 +88,7 @@ public class KvizoviAkt extends AppCompatActivity {
             }
 
         });
-        lvKvizovi.setAdapter(adapter);
+
 
         lvKvizovi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
