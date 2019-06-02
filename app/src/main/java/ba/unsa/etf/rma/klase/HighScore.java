@@ -3,7 +3,7 @@ package ba.unsa.etf.rma.klase;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class HighScore implements Parcelable {
+public class HighScore implements Parcelable, Comparable {
     private double procenatTacnih;
     private String imeIgraca;
     private String imeKviza;
@@ -41,6 +41,8 @@ public class HighScore implements Parcelable {
         this.imeKviza = imeKviza;
     }
 
+
+
     protected HighScore(Parcel in) {
         procenatTacnih = in.readDouble();
         imeIgraca = in.readString();
@@ -71,4 +73,13 @@ public class HighScore implements Parcelable {
             return new HighScore[size];
         }
     };
+
+    @Override
+    public int compareTo(Object o) {
+        HighScore highScore=(HighScore) o;
+        if(highScore.getProcenatTacnih()<this.getProcenatTacnih()){
+            return -1;
+        }
+        return 1;
+    }
 }

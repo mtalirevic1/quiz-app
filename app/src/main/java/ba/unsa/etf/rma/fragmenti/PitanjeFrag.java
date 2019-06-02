@@ -127,7 +127,7 @@ public class PitanjeFrag extends Fragment {
                     odgovori.clear();
                     igrajKvizAdapter.notifyDataSetChanged();
                     tekstPitanja.setText(getString(R.string.kviz_zavrsen));
-                    ((IgrajKvizAkt)getActivity()).unesiHighscore();
+                    ((IgrajKvizAkt)getActivity()).unesiHighscore(f.getProcenatTacnih());
                 }
             }, 2000);
 

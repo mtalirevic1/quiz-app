@@ -1,26 +1,40 @@
 package ba.unsa.etf.rma.aktivnosti;
 
+import android.support.v4.app.FragmentManager;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.widget.EditText;
 
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import ba.unsa.etf.rma.R;
 import ba.unsa.etf.rma.fragmenti.InformacijeFrag;
 import ba.unsa.etf.rma.fragmenti.PitanjeFrag;
+import ba.unsa.etf.rma.fragmenti.RangLista;
+import ba.unsa.etf.rma.klase.BazaTask;
+import ba.unsa.etf.rma.klase.HighScore;
 import ba.unsa.etf.rma.klase.Kviz;
 
-public class IgrajKvizAkt extends AppCompatActivity implements InformacijeFrag.OnFragmentInteractionListener, PitanjeFrag.OnFragmentInteractionListener {
+public class IgrajKvizAkt extends AppCompatActivity implements InformacijeFrag.OnFragmentInteractionListener, PitanjeFrag.OnFragmentInteractionListener, RangLista.OnFragmentInteractionListener {
 
     private Kviz kviz;
     private String pitanjeFragTag;
     private String infoFragTag;
     private String ime;
+    private ArrayList<HighScore> highScores;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +56,7 @@ public class IgrajKvizAkt extends AppCompatActivity implements InformacijeFrag.O
         ime="";
         pitanjeFragTag=pitanjeFrag.getTag();
         infoFragTag=informacijeFrag.getTag();
+        highScores=new ArrayList<>();
     }
 
     public void naClick(int position) {
@@ -54,7 +69,7 @@ public class IgrajKvizAkt extends AppCompatActivity implements InformacijeFrag.O
         finish();
     }
 
-    public void unesiHighscore(){
+    public void unesiHighscore(final double procenat){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Unesite ime");
 
@@ -65,6 +80,7 @@ public class IgrajKvizAkt extends AppCompatActivity implements InformacijeFrag.O
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 ime = input.getText().toString();
+                ucitajRangListu(ime,kviz.getNaziv(),procenat);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -77,7 +93,102 @@ public class IgrajKvizAkt extends AppCompatActivity implements InformacijeFrag.O
         builder.show();
     }
 
-    public void prikaziRangListu(){
+
+    public void ucitajRangListu(final String imeIgraca,final String nazivKviza,final double procenat){
+        class TaskPost extends BazaTask {
+
+            public TaskPost(String kolekcija, String method, Boolean output, String document, Resources res) {
+                super(kolekcija, method, output, document, res);
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                try {
+                    String odgovor = this.getOdgovor();
+
+                   highScores.clear();
+
+
+                    JSONObject object = new JSONObject(odgovor);
+                    JSONArray documents = object.getJSONArray("documents");
+
+
+                    for (int i=0; i < documents.length(); i++) {
+
+                        JSONObject doc = documents.getJSONObject(i);
+
+                        JSONObject fields = new JSONObject(doc.getString("fields"));
+
+                        JSONObject naziv = new JSONObject(fields.getString("nazivKviza"));
+                        String name=naziv.getString("stringValue");
+                        if(!name.equals(kviz.getNaziv())) continue;
+
+                        HighScore highScore=new HighScore();
+                        highScore.setImeKviza(name);
+
+                        JSONObject lista= new JSONObject(fields.getString("lista"));
+                        JSONObject mapValue=new JSONObject(lista.getString("mapValue"));
+                        JSONObject fields2=new JSONObject(mapValue.getString("fields"));
+                        JSONObject pozicija= new JSONObject(fields2.getString("pozicija"));
+                        JSONObject mapValue2= new JSONObject(pozicija.getString("mapValue"));
+                        JSONObject fields3= new JSONObject(mapValue2.getString("fields"));
+                        Iterator<String> keys = fields3.keys();
+                        if(keys.hasNext()){
+                            String key=(String)keys.next();
+                            highScore.setImeIgraca(key);
+                            JSONObject iV=new JSONObject(fields3.getString(key));
+                            highScore.setProcenatTacnih(Double.parseDouble(iV.getString("doubleValue")));
+                        }
+                        highScores.add(highScore);
+                    }
+                    HighScore hs=new HighScore(procenat*100,imeIgraca,nazivKviza);
+                    highScores.add(hs);
+                    RangLista rangLista=RangLista.newInstance(highScores);
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.pitanjePlace, rangLista,"rangLista");
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                    azurirajRangListe(hs);
+                }
+                catch (JSONException e){
+
+                }
+            }
+        }
+        TaskPost task = new TaskPost("Rangliste", "GET", false, "", getResources());
+        task.execute();
+    }
+
+    public void azurirajRangListe(HighScore highScore){
+        try {
+            JSONObject jo = new JSONObject();
+            JSONObject fields = new JSONObject();
+            JSONObject fields2 = new JSONObject();
+            JSONObject fields3 = new JSONObject();
+            JSONObject mapValue = new JSONObject();
+            JSONObject mapValue2 = new JSONObject();
+            JSONObject pozicija = new JSONObject();
+            JSONObject lista = new JSONObject();
+            JSONObject nazivKviza = new JSONObject();
+
+            JSONObject imeIgraca = new JSONObject();
+            imeIgraca.put("doubleValue", highScore.getProcenatTacnih() + "");
+            fields3.put(highScore.getImeIgraca(),imeIgraca);
+            mapValue2.put("fields",fields3);
+            pozicija.put("mapValue",mapValue2);
+            fields2.put("pozicija",pozicija);
+            mapValue.put("fields",fields2);
+            lista.put("mapValue",mapValue);
+            fields.put("lista",lista);
+            nazivKviza.put("stringValue",kviz.getNaziv());
+            fields.put("nazivKviza",nazivKviza);
+            jo.put("fields",fields);
+            Log.d("RANG",jo.toString());
+            new BazaTask("Rangliste","POST",true,jo.toString(),getResources()).execute();
+
+        }catch (JSONException e){
+
+        }
 
     }
 

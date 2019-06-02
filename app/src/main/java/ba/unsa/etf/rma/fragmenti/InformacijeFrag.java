@@ -37,6 +37,10 @@ public class InformacijeFrag extends Fragment {
 
     private Kviz kviz;
 
+    public Double getProcenatTacnih() {
+        return procenatTacnih;
+    }
+
     public InformacijeFrag() {
     }
 

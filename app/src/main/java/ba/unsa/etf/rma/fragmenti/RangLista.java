@@ -7,17 +7,25 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 import ba.unsa.etf.rma.R;
+import ba.unsa.etf.rma.klase.HighScore;
 import ba.unsa.etf.rma.klase.Kviz;
+import ba.unsa.etf.rma.klase.RangListaAdapter;
 
 
 public class RangLista extends Fragment {
 
+    private ArrayList<HighScore> highScores;
+    private RangListaAdapter rangListaAdapter;
 
-    // TODO: Rename and change types of parameters
-    private String ime;
-    private Kviz kviz;
+    private TextView tekstRangliste;
+    private ListView ranglista;
 
     private OnFragmentInteractionListener mListener;
 
@@ -25,11 +33,10 @@ public class RangLista extends Fragment {
         // Required empty public constructor
     }
 
-    public static RangLista newInstance(Kviz kviz, String ime, double procenat) {
+    public static RangLista newInstance(ArrayList<HighScore> highScores) {
         RangLista fragment = new RangLista();
         Bundle args = new Bundle();
-        args.putParcelable("kviz", kviz);
-        args.putString("ime",ime);
+        args.putParcelableArrayList("highScores", highScores);
         fragment.setArguments(args);
         return fragment;
     }
@@ -38,24 +45,27 @@ public class RangLista extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            ime= getArguments().getString("ime");
-            kviz=getArguments().getParcelable("kviz");
+            highScores=getArguments().getParcelableArrayList("highScores");
         }
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_rang_lista, container, false);
-    }
+        View view = inflater.inflate(R.layout.fragment_rang_lista, container, false);
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
+        tekstRangliste=(TextView) view.findViewById(R.id.tekstRangliste);
+        ranglista=(ListView) view.findViewById(R.id.ranglista);
 
+        Collections.sort(highScores);
+
+        rangListaAdapter = new RangListaAdapter(getActivity(), highScores, getResources());
+        ranglista.setAdapter(rangListaAdapter);
+        rangListaAdapter.notifyDataSetChanged();
+        return view;
+    }
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -73,18 +83,8 @@ public class RangLista extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

@@ -74,7 +74,7 @@ public class RangListaAdapter extends BaseAdapter {
         }
 
         highScore=(HighScore)data.get(position);
-        holder.procenat.setText(String.format(".2f",highScore.getProcenatTacnih()));
+        holder.procenat.setText(String.format( "%.2f", highScore.getProcenatTacnih() )+"%");
         holder.ime.setText(highScore.getImeIgraca());
         holder.redni.setText(position+1+"");
 

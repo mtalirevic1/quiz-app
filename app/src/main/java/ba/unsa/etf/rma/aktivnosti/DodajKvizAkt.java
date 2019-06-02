@@ -325,7 +325,6 @@ public class DodajKvizAkt extends AppCompatActivity {
     }
 
     private void readFile(Uri uri) {
-        // File file = new File(uri.toString());
         try {
 
 
@@ -539,10 +538,6 @@ public class DodajKvizAkt extends AppCompatActivity {
     }
 
 
-    public void izbaciPitanjeFirestore(String id) {
-        new BazaTask("Pitanja/" + id, "DELETE", false, "", getResources()).execute();
-    }
-
     public void ucitajPitanjaFirestore() throws JSONException {
 
         class TaskPost extends BazaTask{
@@ -612,11 +607,6 @@ public class DodajKvizAkt extends AppCompatActivity {
 
         TaskPost task = new TaskPost("Pitanja", "GET", false, "", getResources());
         task.execute();
-
-    }
-
-
-    private void setData() throws JSONException {
 
     }
 
