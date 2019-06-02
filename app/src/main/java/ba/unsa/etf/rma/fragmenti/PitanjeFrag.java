@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import ba.unsa.etf.rma.R;
+import ba.unsa.etf.rma.aktivnosti.IgrajKvizAkt;
 import ba.unsa.etf.rma.klase.IgrajKvizAdapter;
 import ba.unsa.etf.rma.klase.Kviz;
 import ba.unsa.etf.rma.klase.Pitanje;
@@ -126,6 +127,7 @@ public class PitanjeFrag extends Fragment {
                     odgovori.clear();
                     igrajKvizAdapter.notifyDataSetChanged();
                     tekstPitanja.setText(getString(R.string.kviz_zavrsen));
+                    ((IgrajKvizAkt)getActivity()).unesiHighscore();
                 }
             }, 2000);
 

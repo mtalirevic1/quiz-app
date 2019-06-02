@@ -1,9 +1,13 @@
 package ba.unsa.etf.rma.aktivnosti;
 
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
+import android.widget.EditText;
 
 
 import ba.unsa.etf.rma.R;
@@ -16,6 +20,7 @@ public class IgrajKvizAkt extends AppCompatActivity implements InformacijeFrag.O
     private Kviz kviz;
     private String pitanjeFragTag;
     private String infoFragTag;
+    private String ime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +39,7 @@ public class IgrajKvizAkt extends AppCompatActivity implements InformacijeFrag.O
         transaction2.replace(R.id.pitanjePlace, pitanjeFrag,"pitFrag");
         transaction2.addToBackStack(null);
         transaction2.commit();
-
+        ime="";
         pitanjeFragTag=pitanjeFrag.getTag();
         infoFragTag=informacijeFrag.getTag();
     }
@@ -47,6 +52,33 @@ public class IgrajKvizAkt extends AppCompatActivity implements InformacijeFrag.O
     public void zavrsiAkt(){
         setResult(RESULT_OK);
         finish();
+    }
+
+    public void unesiHighscore(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Unesite ime");
+
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ime = input.getText().toString();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    public void prikaziRangListu(){
+
     }
 
     @Override
