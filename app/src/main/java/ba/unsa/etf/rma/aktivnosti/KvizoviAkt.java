@@ -1,14 +1,19 @@
 package ba.unsa.etf.rma.aktivnosti;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,6 +24,7 @@ import java.util.ArrayList;
 import ba.unsa.etf.rma.R;
 import ba.unsa.etf.rma.klase.BazaTask;
 import ba.unsa.etf.rma.klase.Kategorija;
+import ba.unsa.etf.rma.klase.Konekcija;
 import ba.unsa.etf.rma.klase.Kviz;
 import ba.unsa.etf.rma.klase.KvizoviAktAdapter;
 import ba.unsa.etf.rma.klase.Pitanje;
@@ -62,7 +68,7 @@ public class KvizoviAkt extends AppCompatActivity {
 
 
         try {
-            ucitajSveFirestore();
+            ucitajSveFirestore(true);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -103,8 +109,29 @@ public class KvizoviAkt extends AppCompatActivity {
                 return true;
             }
         });
-
+        IntentFilter intentFilter=new IntentFilter();
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        intentFilter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
+        registerReceiver(internetStatusReceiver,intentFilter);
     }
+
+    BroadcastReceiver internetStatusReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int status = Konekcija.dajStatusKonekcije(context);
+            Log.e("NETWORK", "Primljeno");
+            if ("android.net.conn.CONNECTIVITY_CHANGE".equals(intent.getAction())) {
+                if (status == Konekcija.TYPE_NOT_CONNECTED) {
+                    //todo
+                    Log.e("NETWORK", "NEMA INTERNETA");
+                } else {
+                    //todo
+                    Log.e("NETWORK", "IMA INTERNETA");
+
+                }
+            }
+        }
+    };
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -223,7 +250,7 @@ public class KvizoviAkt extends AppCompatActivity {
 
     }
 
-    public void ucitajKategorijeFirestore(final Boolean prvi) {
+    public void ucitajKategorijeFirestore(final Boolean prvi, final Boolean sviKvizovi) {
         class TaskKat extends BazaTask {
 
             public TaskKat(String kolekcija, String method, Boolean output, String document, Resources res) {
@@ -261,7 +288,12 @@ public class KvizoviAkt extends AppCompatActivity {
                 }
 
                 if (prvi) {
-                    ucitajKvizoveFirestore();
+                    if(sviKvizovi) {
+                        ucitajKvizoveFirestore();
+                    }
+                    else{
+                        ucitajKvizoveKategorijeFirestore();
+                    }
                 }
             }
         }
@@ -374,7 +406,7 @@ public class KvizoviAkt extends AppCompatActivity {
 
     }
 
-    public void ucitajSveFirestore() throws JSONException {
+    public void ucitajSveFirestore(final Boolean sviKvizovi) throws JSONException {
 
         class TaskPit extends BazaTask {
 
@@ -422,7 +454,7 @@ public class KvizoviAkt extends AppCompatActivity {
                         pitanja.add(pitanje);
                     }
 
-                    ucitajKategorijeFirestore(true);
+                    ucitajKategorijeFirestore(true,sviKvizovi);
 
                 } catch (JSONException e) {
 
