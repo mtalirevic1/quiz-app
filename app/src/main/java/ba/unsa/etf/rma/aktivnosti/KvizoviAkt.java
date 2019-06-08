@@ -284,6 +284,8 @@ public class KvizoviAkt extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             try {
+                resetujListu(filtriranaLista);
+                adapter.notifyDataSetChanged();
                 String odgovor = "";
                 if (getKolekcija().equals("query")) {
                     odgovor = "{ \"documents\": " + getRezultat() + "}";
@@ -347,9 +349,9 @@ public class KvizoviAkt extends AppCompatActivity {
                     }
                     kvizovi.add(kviz);
                 }
-                resetujListu(filtriranaLista);
+
                 for (Kviz k : kvizovi) {
-                    filtriranaLista.add(filtriranaLista.size() - 1, k);//todo
+                    filtriranaLista.add(filtriranaLista.size() - 1, k);
                 }
                 adapter.notifyDataSetChanged();
 
@@ -486,5 +488,6 @@ public class KvizoviAkt extends AppCompatActivity {
 
         }
     }
+
 
 }

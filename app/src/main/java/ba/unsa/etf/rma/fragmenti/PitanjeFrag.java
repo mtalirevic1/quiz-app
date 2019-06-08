@@ -110,13 +110,23 @@ public class PitanjeFrag extends Fragment {
         FragmentManager fm = getFragmentManager();
         final InformacijeFrag f = (InformacijeFrag)fm.findFragmentByTag("infoFrag");
         Boolean t;
+        int indexTacnog=-1;
         if (odgovori.get(position).equals(tacan)) {
             odgovoriPitanja.getChildAt(position).setBackgroundColor(getResources().getColor(R.color.zelena));
             t=true;
+            indexTacnog=-1;
         } else {
             odgovoriPitanja.getChildAt(position).setBackgroundColor(getResources().getColor(R.color.crvena));
+            for(int i=0;i<odgovori.size();i++){
+                if(odgovori.get(i).equals(tacan)){
+                    indexTacnog=i;
+                    odgovoriPitanja.getChildAt(i).setBackgroundColor(getResources().getColor(R.color.zelena));
+                    break;
+                }
+            }
             t=false;
         }
+        final int indeks=indexTacnog;
         final Boolean isCorrect=t;
         if (pitanja.size() == 0) {
             f.updateStats(isCorrect);
@@ -124,6 +134,9 @@ public class PitanjeFrag extends Fragment {
                 @Override
                 public void run() {
                     odgovoriPitanja.getChildAt(position).setBackgroundColor(getResources().getColor(R.color.bijela));
+                    if(indeks!=-1){
+                        odgovoriPitanja.getChildAt(indeks).setBackgroundColor(getResources().getColor(R.color.bijela));
+                    }
                     odgovori.clear();
                     igrajKvizAdapter.notifyDataSetChanged();
                     tekstPitanja.setText(getString(R.string.kviz_zavrsen));
@@ -137,13 +150,14 @@ public class PitanjeFrag extends Fragment {
                 @Override
                 public void run() {
                     odgovoriPitanja.getChildAt(position).setBackgroundColor(getResources().getColor(R.color.bijela));
+                    if(indeks!=-1){
+                        odgovoriPitanja.getChildAt(indeks).setBackgroundColor(getResources().getColor(R.color.bijela));
+                    }
                     odgovori.clear();
                     odgovori.addAll(pitanja.get(0).getOdgovori());
                     tacan = pitanja.get(0).getTacan();
                     igrajKvizAdapter.notifyDataSetChanged();
                     tekstPitanja.setText(pitanja.get(0).getTextPitanja());
-
-
                     pitanja.remove(0);
                 }
             }, 2000);
