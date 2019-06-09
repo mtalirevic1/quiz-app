@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import ba.unsa.etf.rma.R;
 import ba.unsa.etf.rma.klase.BazaTask;
 import ba.unsa.etf.rma.klase.Kategorija;
+import ba.unsa.etf.rma.klase.Konekcija;
 
 public class DodajKategorijuAkt extends AppCompatActivity implements IconDialog.Callback {
     private Icon[] selectedIcons;
@@ -69,13 +70,21 @@ public class DodajKategorijuAkt extends AppCompatActivity implements IconDialog.
                 }
                 Boolean imaKategoriju=imaKategoriju(etIkona.getText().toString());
                 if(imaIme() && imaId() && !imaKategoriju){
+
                     Intent returnIntent = new Intent();
                     String s=etNaziv.getText().toString();
                     returnIntent.putExtra("ikona",selectedIcons[0].getId());
                     returnIntent.putExtra("kategorija",s);
-                    setResult(RESULT_OK, returnIntent);
-                    dodajKategorijuFirebase(s,selectedIcons[0].getId()+"");
-                    finish();
+
+                    if(Konekcija.dajStatusKonekcije(getApplicationContext())==Konekcija.TYPE_NOT_CONNECTED){
+                        Konekcija.nemaKonekcijeToast(getApplicationContext());
+                    }
+                    else{
+                        setResult(RESULT_OK, returnIntent);
+                        dodajKategorijuFirebase(s,selectedIcons[0].getId()+"");
+                        finish();
+                    }
+
                 } else if(imaKategoriju){
                     new AlertDialog.Builder(btnDodajKategoriju.getContext())
                             .setTitle("Greška")

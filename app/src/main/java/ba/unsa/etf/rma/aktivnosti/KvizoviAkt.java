@@ -66,12 +66,7 @@ public class KvizoviAkt extends AppCompatActivity {
         Resources res = getResources();
         unosi = new ArrayList<>();
 
-
-        try {
-            ucitajSveFirestore(true);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        ucitajSve();
 
         adapter = new KvizoviAktAdapter(this, filtriranaLista, res);
         lvKvizovi.setAdapter(adapter);
@@ -111,7 +106,6 @@ public class KvizoviAkt extends AppCompatActivity {
         });
         IntentFilter intentFilter=new IntentFilter();
         intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-        intentFilter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
         registerReceiver(internetStatusReceiver,intentFilter);
     }
 
@@ -119,7 +113,7 @@ public class KvizoviAkt extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             int status = Konekcija.dajStatusKonekcije(context);
-            Log.e("NETWORK", "Primljeno");
+            Log.e("NETWORK", intent.getAction());
             if ("android.net.conn.CONNECTIVITY_CHANGE".equals(intent.getAction())) {
                 if (status == Konekcija.TYPE_NOT_CONNECTED) {
                     //todo
@@ -133,8 +127,21 @@ public class KvizoviAkt extends AppCompatActivity {
         }
     };
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void ucitajSve(){
+        if(Konekcija.dajStatusKonekcije(getApplicationContext())!=Konekcija.TYPE_NOT_CONNECTED) {
+            try {
+                ucitajSveFirestore();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        else{
+            Log.e("NETWORK", "IZ BAZE UCITATI");
+        }
+    }
 
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        ucitajSve();
         if (requestCode == 1) {
             Bundle bundle = data.getExtras();
 
@@ -204,6 +211,10 @@ public class KvizoviAkt extends AppCompatActivity {
         if (mPosition == filtriranaLista.size() - 1) {
             return;
         }
+        if(Konekcija.dajStatusKonekcije(getApplicationContext())==Konekcija.TYPE_NOT_CONNECTED){
+            Konekcija.nemaKonekcijeToast(getApplicationContext());
+            return;
+        }
         Boolean novi = false;
         Kviz kviz = filtriranaLista.get(mPosition);
         Integer pos = mPosition;
@@ -238,6 +249,12 @@ public class KvizoviAkt extends AppCompatActivity {
             startActivityForResult(intent, 5);
         } else {
             //dodaj kviz
+
+            if(Konekcija.dajStatusKonekcije(getApplicationContext())==Konekcija.TYPE_NOT_CONNECTED){
+                Konekcija.nemaKonekcijeToast(getApplicationContext());
+                return;
+            }
+
             Intent intent = new Intent(KvizoviAkt.this, DodajKvizAkt.class);
             intent.putExtra("kategorije", kategorije);
             intent.putExtra("kviz", new Kviz("", new Kategorija("", ""), new ArrayList<Pitanje>()));
@@ -250,7 +267,7 @@ public class KvizoviAkt extends AppCompatActivity {
 
     }
 
-    public void ucitajKategorijeFirestore(final Boolean prvi, final Boolean sviKvizovi) {
+    public void ucitajKategorijeFirestore(final Boolean ucitajKvizove) {
         class TaskKat extends BazaTask {
 
             public TaskKat(String kolekcija, String method, Boolean output, String document, Resources res) {
@@ -287,8 +304,8 @@ public class KvizoviAkt extends AppCompatActivity {
 
                 }
 
-                if (prvi) {
-                    if(sviKvizovi) {
+                if (ucitajKvizove) {
+                    if(!((Kategorija)spPostojeceKategorije.getSelectedItem()).getNaziv().equals("Svi")) {
                         ucitajKvizoveFirestore();
                     }
                     else{
@@ -406,7 +423,7 @@ public class KvizoviAkt extends AppCompatActivity {
 
     }
 
-    public void ucitajSveFirestore(final Boolean sviKvizovi) throws JSONException {
+    public void ucitajSveFirestore() throws JSONException {
 
         class TaskPit extends BazaTask {
 
@@ -454,7 +471,7 @@ public class KvizoviAkt extends AppCompatActivity {
                         pitanja.add(pitanje);
                     }
 
-                    ucitajKategorijeFirestore(true,sviKvizovi);
+                    ucitajKategorijeFirestore(true);
 
                 } catch (JSONException e) {
 

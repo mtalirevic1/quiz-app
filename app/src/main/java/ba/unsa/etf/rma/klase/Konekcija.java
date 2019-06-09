@@ -3,6 +3,7 @@ package ba.unsa.etf.rma.klase;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.widget.Toast;
 
 public class Konekcija {
 
@@ -22,6 +23,13 @@ public class Konekcija {
                 return TYPE_MOBILE;
         }
         return TYPE_NOT_CONNECTED;
+    }
+
+    public static void nemaKonekcijeToast(Context context){
+        Toast toast=new Toast(context);
+        toast.setText("Nema Internet konekcije");
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.show();
     }
 
 }

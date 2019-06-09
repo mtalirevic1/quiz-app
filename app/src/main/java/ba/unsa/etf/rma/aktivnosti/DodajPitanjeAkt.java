@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import ba.unsa.etf.rma.R;
 import ba.unsa.etf.rma.klase.BazaTask;
 import ba.unsa.etf.rma.klase.BlueListAdapter;
+import ba.unsa.etf.rma.klase.Konekcija;
 import ba.unsa.etf.rma.klase.Pitanje;
 
 public class DodajPitanjeAkt extends AppCompatActivity {
@@ -98,11 +99,15 @@ public class DodajPitanjeAkt extends AppCompatActivity {
                     Intent returnIntent = new Intent();
                     Pitanje pitanje = new Pitanje(etNaziv.getText().toString(), etNaziv.getText().toString(), new ArrayList<String>(odgovori), tacan);
 
-                    dodajPitanjeFirestore(pitanje);
-
-                    returnIntent.putExtra("pitanje", pitanje);
-                    setResult(RESULT_OK, returnIntent);
-                    finish();
+                    if(Konekcija.dajStatusKonekcije(getApplicationContext())==Konekcija.TYPE_NOT_CONNECTED){
+                        Konekcija.nemaKonekcijeToast(getApplicationContext());
+                    }
+                    else{
+                        dodajPitanjeFirestore(pitanje);
+                        returnIntent.putExtra("pitanje", pitanje);
+                        setResult(RESULT_OK, returnIntent);
+                        finish();
+                    }
                 }
             }
         });

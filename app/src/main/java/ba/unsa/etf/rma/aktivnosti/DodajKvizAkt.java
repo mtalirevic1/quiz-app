@@ -33,6 +33,7 @@ import ba.unsa.etf.rma.R;
 import ba.unsa.etf.rma.klase.BazaTask;
 import ba.unsa.etf.rma.klase.DodajKvizAdapter;
 import ba.unsa.etf.rma.klase.Kategorija;
+import ba.unsa.etf.rma.klase.Konekcija;
 import ba.unsa.etf.rma.klase.Kviz;
 import ba.unsa.etf.rma.klase.NeispravnaDatotekaException;
 import ba.unsa.etf.rma.klase.Pitanje;
@@ -177,6 +178,7 @@ public class DodajKvizAkt extends AppCompatActivity {
                     pitanjaText.setTextColor(getResources().getColor(R.color.colorLabel1));
                 }
 
+
                 if ((imaPitanja() && imaIme() && !novi && (!imaKviz() || imaPrvobitno())) || (imaPitanja() && imaIme() && novi && !imaKviz())) {
                     kviz.setNaziv(etNaziv.getText().toString());
                     kviz.setKategorija((Kategorija) spKategorije.getSelectedItem());
@@ -194,14 +196,19 @@ public class DodajKvizAkt extends AppCompatActivity {
                         }
                     }
 
-                    if (novi) {
-                        dodajKvizFirestore(kviz, kvizovi.size() + "");
-                    } else {
-                        dodajKvizFirestore(kviz, id);
+                    if(Konekcija.dajStatusKonekcije(getApplicationContext())==Konekcija.TYPE_NOT_CONNECTED){
+                        Konekcija.nemaKonekcijeToast(getApplicationContext());
                     }
+                    else{
+                        if (novi) {
+                            dodajKvizFirestore(kviz, kvizovi.size() + "");
+                        } else {
+                            dodajKvizFirestore(kviz, id);
+                        }
 
-                    setResult(RESULT_OK, returnIntent);
-                    finish();
+                        setResult(RESULT_OK, returnIntent);
+                        finish();
+                    }
                 }
             }
         });
