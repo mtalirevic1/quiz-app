@@ -1,14 +1,17 @@
 package ba.unsa.etf.rma.aktivnosti;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -124,6 +127,7 @@ public class KvizoviAkt extends AppCompatActivity {
                     Log.e("NETWORK", "NEMA INTERNETA");
                 } else {
                     //todo
+                    ucitajSve();
                     Log.e("NETWORK", "IMA INTERNETA");
 
                 }
@@ -311,7 +315,7 @@ public class KvizoviAkt extends AppCompatActivity {
                 }
 
                 if (ucitajKvizove) {
-                    if(!((Kategorija)spPostojeceKategorije.getSelectedItem()).getNaziv().equals("Svi")) {
+                    if(((Kategorija)spPostojeceKategorije.getSelectedItem()).getNaziv().equals("Svi")) {
                         ucitajKvizoveFirestore();
                     }
                     else{
@@ -545,6 +549,11 @@ public class KvizoviAkt extends AppCompatActivity {
     }
 
     public boolean imaEvent(Kviz k){
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_CALENDAR}, 8);
+        }
+
         ContentResolver cr=getContentResolver();
         Cursor cursor = cr.query(Uri.parse("content://com.android.calendar/events"), new String[]{ "calendar_id", "title", "description", "dtstart", "dtend", "eventLocation" }, null, null, null);
         cursor.moveToFirst();
