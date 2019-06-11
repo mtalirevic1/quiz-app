@@ -1,10 +1,15 @@
 package ba.unsa.etf.rma.aktivnosti;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.net.Uri;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,7 +18,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -245,8 +249,10 @@ public class KvizoviAkt extends AppCompatActivity {
                 }
             }
             kviz.setPitanja(pitanja);
-            intent.putExtra("kviz", kviz);
-            startActivityForResult(intent, 5);
+            if(!imaEvent(kviz)) {
+                intent.putExtra("kviz", kviz);
+                startActivityForResult(intent, 5);
+            }
         } else {
             //dodaj kviz
 
@@ -538,5 +544,43 @@ public class KvizoviAkt extends AppCompatActivity {
         }
     }
 
+    public boolean imaEvent(Kviz k){
+        ContentResolver cr=getContentResolver();
+        Cursor cursor = cr.query(Uri.parse("content://com.android.calendar/events"), new String[]{ "calendar_id", "title", "description", "dtstart", "dtend", "eventLocation" }, null, null, null);
+        cursor.moveToFirst();
+        int count=cursor.getCount();
+        for (int i = 0; i < count; i++) {
+            Long dtstart= cursor.getLong(cursor.getColumnIndex("dtstart"));
+            Long dtend=cursor.getLong(cursor.getColumnIndex("dtend"));
+            Long systemTime=System.currentTimeMillis();
+            Double d=Integer.valueOf(k.getPitanja().size()).doubleValue();
+            Long x=Double.valueOf(Math.ceil(d/2)*60000).longValue();
+            if(systemTime+x>dtstart && systemTime<=dtend){
+                Integer minuta=Long.valueOf((dtstart-systemTime)/60000).intValue();
+                napraviAlert("Upozorenje","Imate događaj u kalendaru za "+ minuta.toString()+" minuta!");
+                return true;
+            }
+            else if(systemTime>=dtstart && systemTime<=dtend){
+                napraviAlert("Upozorenje","Imate trenutno aktivan događaj u kalendaru!");
+                return true;
+            }
+
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return false;
+    }
+
+    public void napraviAlert(String naslov,String poruka){
+        new AlertDialog.Builder(this)
+                .setTitle(naslov)
+                .setMessage(poruka)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .show();
+    }
 
 }

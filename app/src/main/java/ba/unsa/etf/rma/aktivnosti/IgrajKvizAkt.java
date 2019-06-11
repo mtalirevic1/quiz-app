@@ -54,6 +54,7 @@ public class IgrajKvizAkt extends AppCompatActivity implements InformacijeFrag.O
         pitanjeFragTag=pitanjeFrag.getTag();
         infoFragTag=informacijeFrag.getTag();
         highScores=new ArrayList<>();
+
     }
 
     public void naClick(int position) {
