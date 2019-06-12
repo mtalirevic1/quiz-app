@@ -3,6 +3,7 @@ package ba.unsa.etf.rma.aktivnosti;
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -34,6 +36,7 @@ import ba.unsa.etf.rma.klase.Kategorija;
 import ba.unsa.etf.rma.klase.Konekcija;
 import ba.unsa.etf.rma.klase.Kviz;
 import ba.unsa.etf.rma.klase.KvizoviAktAdapter;
+import ba.unsa.etf.rma.klase.KvizoviDBOpenHelper;
 import ba.unsa.etf.rma.klase.Pitanje;
 
 public class KvizoviAkt extends AppCompatActivity {
@@ -49,10 +52,12 @@ public class KvizoviAkt extends AppCompatActivity {
     private ArrayList<Pitanje> pitanja;
     private ArrayList<String> odgovori;
 
+    private SQLiteDatabase db;
+    private KvizoviDBOpenHelper dbOpenHelper;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.kvizovi_akt);
 
@@ -72,6 +77,9 @@ public class KvizoviAkt extends AppCompatActivity {
 
         Resources res = getResources();
         unosi = new ArrayList<>();
+
+        dbOpenHelper=new KvizoviDBOpenHelper(getApplicationContext(),KvizoviDBOpenHelper.DATABASE_NAME,null,1);
+        db=dbOpenHelper.getWritableDatabase();
 
         ucitajSve();
 
@@ -149,6 +157,7 @@ public class KvizoviAkt extends AppCompatActivity {
         }
         else{
             Log.e("NETWORK", "IZ BAZE UCITATI");
+            //todo uraditi citanje
         }
     }
 
@@ -583,6 +592,20 @@ public class KvizoviAkt extends AppCompatActivity {
         cursor.close();
         return false;
     }
+
+
+   /* public void azurirajSQLBazu(){
+        for(int i=0;i<)
+        ContentValues vrijednosti = new ContentValues();
+        vrijednosti.put("_id", 1); // the execution is different if _id is 2
+        vrijednosti.put("columnA", "valueNEW");
+
+        int id = (int) db.insertWithOnConflict(KvizoviDBOpenHelper.KVIZOVI_TABLE, null, vrijednosti, SQLiteDatabase.CONFLICT_IGNORE);
+        if (id == -1) {
+            yourdb.update("your_table", vrijednosti, "_id=?", new String[] {"1"});  // number 1 is the _id here, update to variable for your code
+        }
+
+    }*/
 
     public void napraviAlert(String naslov,String poruka){
         new AlertDialog.Builder(this)
