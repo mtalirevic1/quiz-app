@@ -1,7 +1,11 @@
 package ba.unsa.etf.rma.aktivnosti;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.provider.AlarmClock;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +18,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 
 import ba.unsa.etf.rma.R;
@@ -54,7 +61,7 @@ public class IgrajKvizAkt extends AppCompatActivity implements InformacijeFrag.O
         pitanjeFragTag=pitanjeFrag.getTag();
         infoFragTag=informacijeFrag.getTag();
         highScores=new ArrayList<>();
-
+        setAlarm(kviz);
     }
 
     public void naClick(int position) {
@@ -187,6 +194,34 @@ public class IgrajKvizAkt extends AppCompatActivity implements InformacijeFrag.O
 
         }
 
+    }
+
+    public void setAlarm(Kviz k){
+
+        Double minuta= Math.ceil(Integer.valueOf(k.getPitanja().size()).doubleValue()/2);
+        Integer sati = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        int min=Calendar.getInstance().get(Calendar.MINUTE);
+        minuta+=min;
+        while(minuta>=60){
+            minuta-=60;
+            sati++;
+        }
+        while(sati>=24){
+            sati-=24;
+        }
+        Intent i = new Intent(AlarmClock.ACTION_SET_ALARM);
+        i.putExtra(AlarmClock.EXTRA_SKIP_UI, true);
+        i.putExtra(AlarmClock.EXTRA_HOUR,sati);
+        i.putExtra(AlarmClock.EXTRA_MINUTES,minuta.intValue());
+        i.putExtra(AlarmClock.EXTRA_MESSAGE, "No quiz lasts forever!");
+        startActivity(i);
+    }
+
+    public void removeAlarm(){
+        AlarmManager aManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Intent intent = new Intent(getBaseContext(), this.getClass());
+        PendingIntent pIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        aManager.cancel(pIntent);
     }
 
     @Override

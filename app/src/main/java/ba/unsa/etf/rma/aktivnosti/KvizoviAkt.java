@@ -114,6 +114,10 @@ public class KvizoviAkt extends AppCompatActivity {
         IntentFilter intentFilter=new IntentFilter();
         intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(internetStatusReceiver,intentFilter);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_CALENDAR}, 8);
+        }
     }
 
     BroadcastReceiver internetStatusReceiver = new BroadcastReceiver() {
@@ -550,8 +554,8 @@ public class KvizoviAkt extends AppCompatActivity {
 
     public boolean imaEvent(Kviz k){
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_CALENDAR}, 8);
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED){
+            return false;
         }
 
         ContentResolver cr=getContentResolver();
@@ -564,7 +568,7 @@ public class KvizoviAkt extends AppCompatActivity {
             Long systemTime=System.currentTimeMillis();
             Double d=Integer.valueOf(k.getPitanja().size()).doubleValue();
             Long x=Double.valueOf(Math.ceil(d/2)*60000).longValue();
-            if(systemTime+x>dtstart && systemTime<=dtend){
+            if(systemTime+x>dtstart && systemTime<dtstart){
                 Integer minuta=Long.valueOf((dtstart-systemTime)/60000).intValue();
                 napraviAlert("Upozorenje","Imate događaj u kalendaru za "+ minuta.toString()+" minuta!");
                 return true;
