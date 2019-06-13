@@ -274,7 +274,7 @@ public class DodajKvizAkt extends AppCompatActivity {
 
     public void onItemClick(int mPosition) {
 
-        if (mPosition != pitanjaKviza.size() - 1) {
+        if (pitanjaKviza.size()>1 && mPosition != pitanjaKviza.size() - 1) {
             //prebaci u moguce
             mogucaPitanja.add(mogucaPitanja.size(), pitanjaKviza.get(mPosition));
             pitanjaKviza.remove(mPosition);
