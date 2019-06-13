@@ -254,7 +254,7 @@ public class KvizoviAkt extends AppCompatActivity {
 
         Integer pos = mPosition;
         Boolean novi = false;
-        if (mPosition != filtriranaLista.size() - 1) {
+        if (filtriranaLista.size()>1 && mPosition != filtriranaLista.size() - 1) {
 
             Intent intent = new Intent(KvizoviAkt.this, IgrajKvizAkt.class);
             Kviz kviz = filtriranaLista.get(mPosition);
