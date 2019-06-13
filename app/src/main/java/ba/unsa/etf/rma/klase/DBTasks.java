@@ -19,6 +19,13 @@ public class DBTasks {
         this.res = res;
     }
 
+    public void azurirajSveUBazi(){
+        azurirajKategorijeBaze();
+        azurirajPitanjaBaze();
+        azurirajKvizoveBaze();
+        azurirajRangListeBaze();
+    }
+
 
     public void patchKviz(String id, String naziv, String kategorija, String pitanja){
         final String sql="INSERT OR REPLACE INTO "+
@@ -137,7 +144,7 @@ public class DBTasks {
                         String[] pitanja=new String[values.length()];
                         for (int j = 0; j < values.length(); j++) {
                             JSONObject pita = values.getJSONObject(j);
-                            pitanja[i]=pita.getString("stringValue");
+                            pitanja[j]=pita.getString("stringValue");
                         }
                         String pitanjaString=arrayToString(pitanja);
 
@@ -153,7 +160,7 @@ public class DBTasks {
 
         }
 
-        TaskPost task = new TaskPost("Kategorije", "GET", false, "", res);
+        TaskPost task = new TaskPost("Kvizovi", "GET", false, "", res);
         task.execute();
     }
 
@@ -192,11 +199,11 @@ public class DBTasks {
                         String[] nizOdg=new String[values.length()];
                         for (int j = 0; j < values.length(); j++) {
                             JSONObject odg = values.getJSONObject(j);
-                            nizOdg[i]=odg.getString("stringValue");
+                            nizOdg[j]=odg.getString("stringValue");
                         }
                         String stringOdg=arrayToString(nizOdg);
 
-                        patchPitanje(convertToSQLString(naz),indeks,stringOdg);
+                        patchPitanje(convertToSQLString(naz),indeks,convertToSQLString(stringOdg));
                     }
 
                 }
@@ -248,7 +255,7 @@ public class DBTasks {
                             JSONObject iV=new JSONObject(fields3.getString(key));
                             proc=iV.getString("doubleValue");
                         }
-                        patchRanglistu(Integer.valueOf(i).toString(),convertToSQLString(naz),convertToSQLString(key),proc);
+                        patchRanglistu(convertToSQLString(Integer.valueOf(i).toString()),convertToSQLString(naz),convertToSQLString(key),proc);
                     }
                 }
                 catch (JSONException e){

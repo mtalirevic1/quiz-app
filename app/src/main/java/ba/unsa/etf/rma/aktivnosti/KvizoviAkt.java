@@ -32,6 +32,7 @@ import java.util.ArrayList;
 
 import ba.unsa.etf.rma.R;
 import ba.unsa.etf.rma.klase.BazaTask;
+import ba.unsa.etf.rma.klase.DBTasks;
 import ba.unsa.etf.rma.klase.Kategorija;
 import ba.unsa.etf.rma.klase.Konekcija;
 import ba.unsa.etf.rma.klase.Kviz;
@@ -54,6 +55,8 @@ public class KvizoviAkt extends AppCompatActivity {
 
     private SQLiteDatabase db;
     private KvizoviDBOpenHelper dbOpenHelper;
+
+    private DBTasks dbTasks;
 
 
     @Override
@@ -80,8 +83,10 @@ public class KvizoviAkt extends AppCompatActivity {
 
         dbOpenHelper=new KvizoviDBOpenHelper(getApplicationContext(),KvizoviDBOpenHelper.DATABASE_NAME,null,1);
         db=dbOpenHelper.getWritableDatabase();
+        dbTasks=new DBTasks(db,getResources());
 
         ucitajSve();
+        dbTasks.azurirajSveUBazi();
 
         adapter = new KvizoviAktAdapter(this, filtriranaLista, res);
         lvKvizovi.setAdapter(adapter);

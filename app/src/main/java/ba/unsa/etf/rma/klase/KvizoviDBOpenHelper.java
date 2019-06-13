@@ -46,7 +46,7 @@ public class KvizoviDBOpenHelper extends SQLiteOpenHelper {
             KATEGORIJA_NAZIV +" text not null);";
 
     private static final String CREATE_RANGLISTE="create table "+
-            RANGLISTE_TABLE +" ("+RANGLISTA_ID+" integer primary key, "+ RANGLISTA_NAZIV_KVIZA +" text not null, "+
+            RANGLISTE_TABLE +" ("+RANGLISTA_ID+" text primary key, "+ RANGLISTA_NAZIV_KVIZA +" text not null, "+
             RANGLISTA_IME_IGRACA+" text not null, "+
             RANGLISTA_PROCENAT+" real not null);";
 
