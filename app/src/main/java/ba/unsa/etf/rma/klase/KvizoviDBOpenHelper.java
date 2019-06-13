@@ -24,6 +24,7 @@ public class KvizoviDBOpenHelper extends SQLiteOpenHelper {
     public static final String KATEGORIJA_ID= "id" ;
 
     public static final String RANGLISTE_TABLE = "Rangliste" ;
+    public static final String RANGLISTA_ID = "id" ;
     public static final String RANGLISTA_NAZIV_KVIZA = "naziv_kviza" ;
     public static final String RANGLISTA_PROCENAT = "procenat" ;
     public static final String RANGLISTA_IME_IGRACA = "ime_igraca" ;
@@ -45,9 +46,10 @@ public class KvizoviDBOpenHelper extends SQLiteOpenHelper {
             KATEGORIJA_NAZIV +" text not null);";
 
     private static final String CREATE_RANGLISTE="create table "+
-            RANGLISTE_TABLE +" ("+ RANGLISTA_NAZIV_KVIZA +" text not null, "+
+            RANGLISTE_TABLE +" ("+RANGLISTA_ID+" integer primary key, "+ RANGLISTA_NAZIV_KVIZA +" text not null, "+
             RANGLISTA_IME_IGRACA+" text not null, "+
-            RANGLISTA_PROCENAT+" integer not null);";
+            RANGLISTA_PROCENAT+" real not null);";
+
 
     public KvizoviDBOpenHelper (Context context , String name ,
                                 SQLiteDatabase.CursorFactory factory , int version ) {

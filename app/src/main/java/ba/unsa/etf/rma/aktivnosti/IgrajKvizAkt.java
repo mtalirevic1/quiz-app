@@ -188,8 +188,8 @@ public class IgrajKvizAkt extends AppCompatActivity implements InformacijeFrag.O
             nazivKviza.put("stringValue",kviz.getNaziv());
             fields.put("nazivKviza",nazivKviza);
             jo.put("fields",fields);
-            new BazaTask("Rangliste","POST",true,jo.toString(),getResources()).execute();
-
+            new BazaTask("Rangliste/"+HighScore.brojHighScoreova,"POST",true,jo.toString(),getResources()).execute();
+            HighScore.brojHighScoreova+=1;
         }catch (JSONException e){
 
         }

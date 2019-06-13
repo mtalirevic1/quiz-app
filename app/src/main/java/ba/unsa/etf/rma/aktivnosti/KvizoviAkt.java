@@ -594,18 +594,7 @@ public class KvizoviAkt extends AppCompatActivity {
     }
 
 
-   /* public void azurirajSQLBazu(){
-        for(int i=0;i<)
-        ContentValues vrijednosti = new ContentValues();
-        vrijednosti.put("_id", 1); // the execution is different if _id is 2
-        vrijednosti.put("columnA", "valueNEW");
 
-        int id = (int) db.insertWithOnConflict(KvizoviDBOpenHelper.KVIZOVI_TABLE, null, vrijednosti, SQLiteDatabase.CONFLICT_IGNORE);
-        if (id == -1) {
-            yourdb.update("your_table", vrijednosti, "_id=?", new String[] {"1"});  // number 1 is the _id here, update to variable for your code
-        }
-
-    }*/
 
     public void napraviAlert(String naslov,String poruka){
         new AlertDialog.Builder(this)

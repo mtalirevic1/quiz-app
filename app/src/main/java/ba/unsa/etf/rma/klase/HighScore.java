@@ -7,6 +7,7 @@ public class HighScore implements Parcelable, Comparable {
     private double procenatTacnih;
     private String imeIgraca;
     private String imeKviza;
+    public static Integer brojHighScoreova=0;
 
     public HighScore(double procenatTacnih, String imeIgraca, String imeKviza) {
         this.procenatTacnih = procenatTacnih;
