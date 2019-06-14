@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.provider.AlarmClock;
 import android.support.v4.app.FragmentTransaction;
@@ -29,8 +30,11 @@ import ba.unsa.etf.rma.fragmenti.InformacijeFrag;
 import ba.unsa.etf.rma.fragmenti.PitanjeFrag;
 import ba.unsa.etf.rma.fragmenti.RangLista;
 import ba.unsa.etf.rma.klase.BazaTask;
+import ba.unsa.etf.rma.klase.DBTasks;
 import ba.unsa.etf.rma.klase.HighScore;
+import ba.unsa.etf.rma.klase.Konekcija;
 import ba.unsa.etf.rma.klase.Kviz;
+import ba.unsa.etf.rma.klase.KvizoviDBOpenHelper;
 
 public class IgrajKvizAkt extends AppCompatActivity implements InformacijeFrag.OnFragmentInteractionListener, PitanjeFrag.OnFragmentInteractionListener, RangLista.OnFragmentInteractionListener {
 
@@ -39,6 +43,10 @@ public class IgrajKvizAkt extends AppCompatActivity implements InformacijeFrag.O
     private String infoFragTag;
     private String ime;
     private ArrayList<HighScore> highScores;
+
+    private SQLiteDatabase db;
+    private KvizoviDBOpenHelper dbOpenHelper;
+    private DBTasks dbTasks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +69,11 @@ public class IgrajKvizAkt extends AppCompatActivity implements InformacijeFrag.O
         pitanjeFragTag=pitanjeFrag.getTag();
         infoFragTag=informacijeFrag.getTag();
         highScores=new ArrayList<>();
+
+        dbOpenHelper=new KvizoviDBOpenHelper(getApplicationContext(),KvizoviDBOpenHelper.DATABASE_NAME,null,1);
+        db=dbOpenHelper.getWritableDatabase();
+        dbTasks=new DBTasks(db,getResources());
+
         setAlarm(kviz);
     }
 
@@ -85,7 +98,18 @@ public class IgrajKvizAkt extends AppCompatActivity implements InformacijeFrag.O
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 ime = input.getText().toString();
-                ucitajRangListu(ime,kviz.getNaziv(),procenat);
+                if(Konekcija.dajStatusKonekcije(getApplicationContext())!=Konekcija.TYPE_NOT_CONNECTED) {
+                    ucitajRangListu(ime, kviz.getNaziv(), procenat);
+                }
+                else{
+                    highScores.clear();
+                    String where=KvizoviDBOpenHelper.RANGLISTA_NAZIV_KVIZA+"="+dbTasks.convertToSQLString(kviz.getNaziv());
+                    ArrayList<HighScore> hs=dbTasks.ucitajRanglisteBaze(where,null);
+                    highScores.addAll(hs);
+                    highScores.add(new HighScore(procenat,ime,kviz.getNaziv()));
+                    pokreniRangListaFrag();
+                    HighScore.brojHighScoreova+=1;
+                }
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -148,12 +172,12 @@ public class IgrajKvizAkt extends AppCompatActivity implements InformacijeFrag.O
                     }
                     HighScore hs=new HighScore(procenat*100,imeIgraca,nazivKviza);
                     highScores.add(hs);
-                    RangLista rangLista=RangLista.newInstance(highScores);
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.pitanjePlace, rangLista,"rangLista");
-                    transaction.addToBackStack(null);
-                    transaction.commit();
+
+                    pokreniRangListaFrag();
+
                     azurirajRangListe(hs);
+                    HighScore.brojHighScoreova+=1;
+                    dbTasks.azurirajRangListeBaze();
                 }
                 catch (JSONException e){
 
@@ -162,6 +186,18 @@ public class IgrajKvizAkt extends AppCompatActivity implements InformacijeFrag.O
         }
         TaskPost task = new TaskPost("Rangliste", "GET", false, "", getResources());
         task.execute();
+    }
+
+    public void pokreniRangListaFrag(){
+        RangLista rangLista=RangLista.newInstance(highScores);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.pitanjePlace, rangLista,"rangLista");
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    public void ucitajRangListuLokalno(){
+
     }
 
     public void azurirajRangListe(HighScore highScore){
@@ -188,8 +224,8 @@ public class IgrajKvizAkt extends AppCompatActivity implements InformacijeFrag.O
             nazivKviza.put("stringValue",kviz.getNaziv());
             fields.put("nazivKviza",nazivKviza);
             jo.put("fields",fields);
-            new BazaTask("Rangliste/"+HighScore.brojHighScoreova,"POST",true,jo.toString(),getResources()).execute();
-            HighScore.brojHighScoreova+=1;
+            new BazaTask("Rangliste/"+HighScore.brojHighScoreova,"PATCH",true,jo.toString(),getResources()).execute();
+
         }catch (JSONException e){
 
         }
@@ -215,13 +251,6 @@ public class IgrajKvizAkt extends AppCompatActivity implements InformacijeFrag.O
         i.putExtra(AlarmClock.EXTRA_MINUTES,minuta.intValue());
         i.putExtra(AlarmClock.EXTRA_MESSAGE, "No quiz lasts forever!");
         startActivity(i);
-    }
-
-    public void removeAlarm(){
-        AlarmManager aManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        Intent intent = new Intent(getBaseContext(), this.getClass());
-        PendingIntent pIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        aManager.cancel(pIntent);
     }
 
     @Override

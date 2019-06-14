@@ -87,7 +87,7 @@ public class KvizoviAkt extends AppCompatActivity {
 
         ucitajSve();
 
-        if(Konekcija.dajStatusKonekcije(getApplicationContext())==Konekcija.TYPE_NOT_CONNECTED) {
+        if(Konekcija.dajStatusKonekcije(getApplicationContext())!=Konekcija.TYPE_NOT_CONNECTED) {
             dbTasks.azurirajSveUBazi();
         }
 
@@ -159,16 +159,12 @@ public class KvizoviAkt extends AppCompatActivity {
     BroadcastReceiver internetStatusReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            int status = Konekcija.dajStatusKonekcije(context);
             Log.e("NETWORK", intent.getAction());
             if ("android.net.conn.CONNECTIVITY_CHANGE".equals(intent.getAction())) {
-                if (status == Konekcija.TYPE_NOT_CONNECTED) {
-                    Log.e("NETWORK", "NEMA INTERNETA");
-                } else {
-                    ucitajSve();
-                    Log.e("NETWORK", "IMA INTERNETA");
-
+                if(Konekcija.dajStatusKonekcije(getApplicationContext())!=Konekcija.TYPE_NOT_CONNECTED) {
+                    dbTasks.azurirajSveUBazi();
                 }
+                ucitajSve();
             }
         }
     };
@@ -176,13 +172,14 @@ public class KvizoviAkt extends AppCompatActivity {
     public void ucitajSve(){
         if(Konekcija.dajStatusKonekcije(getApplicationContext())!=Konekcija.TYPE_NOT_CONNECTED) {
             try {
+                Log.e("NETWORK", "SA FIRESTOREA UCITAVA ");
                 ucitajSveFirestore();
             } catch (JSONException e) {
 
             }
         }
         else{
-            Log.e("NETWORK", "IZ BAZE UCITATI");
+            Log.e("NETWORK", "IZ SQLITE UCITAVA");
             ucitajSveLokalno();
         }
     }
@@ -625,16 +622,10 @@ public class KvizoviAkt extends AppCompatActivity {
         spPostojeceKategorije.setSelection(0);
         Kategorija k = (Kategorija) spPostojeceKategorije.getSelectedItem();
         String where=null;
-        for(Kategorija ka: kategorije) {
-            Log.d("KATEGORIJE",ka.toString());
-        }
         if (!k.getNaziv().equals("Svi")) {
             where=KvizoviDBOpenHelper.KVIZ_KATEGORIJA_ID+"="+k.getId();
         }
         ArrayList<Kviz> kv=dbTasks.ucitajKvizoveBaze(where,null);
-        for(Kviz ka: kv) {
-            Log.d("KVIZOVI",ka.toString());
-        }
         filtriranaLista.addAll(filtriranaLista.size()-1,kv);
     }
 

@@ -367,7 +367,7 @@ public class DBTasks {
         return highScores;
     }
 
-    private String convertToSQLString(String s){
+    public String convertToSQLString(String s){
         return "'"+s+"'";
     }
 
