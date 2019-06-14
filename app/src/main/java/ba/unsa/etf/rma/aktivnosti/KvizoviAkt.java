@@ -86,19 +86,42 @@ public class KvizoviAkt extends AppCompatActivity {
         dbTasks=new DBTasks(db,getResources());
 
         ucitajSve();
-        dbTasks.azurirajSveUBazi();
+
+        if(Konekcija.dajStatusKonekcije(getApplicationContext())==Konekcija.TYPE_NOT_CONNECTED) {
+            dbTasks.azurirajSveUBazi();
+        }
 
         adapter = new KvizoviAktAdapter(this, filtriranaLista, res);
         lvKvizovi.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 
         spPostojeceKategorije.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 Kategorija kategorija = kategorije.get(position);
                 if (kategorija.getNaziv().equals("Svi")) {
-                    ucitajKvizoveFirestore();
+                    if(Konekcija.dajStatusKonekcije(getApplicationContext())==Konekcija.TYPE_NOT_CONNECTED) {
+                        resetujListu(filtriranaLista);
+                        filtriranaLista.addAll(filtriranaLista.size()-1,dbTasks.ucitajKvizoveBaze(null,null));
+                        adapter.notifyDataSetChanged();
+                    }
+                    else{
+                        ucitajKvizoveFirestore();
+                    }
                 } else {
-                    ucitajKvizoveKategorijeFirestore();
+                    if(Konekcija.dajStatusKonekcije(getApplicationContext())==Konekcija.TYPE_NOT_CONNECTED) {
+                        resetujListu(filtriranaLista);
+                        Kategorija k = (Kategorija) spPostojeceKategorije.getSelectedItem();
+                        String where=null;
+                        if (!k.getNaziv().equals("Svi")) {
+                            where=KvizoviDBOpenHelper.KVIZ_KATEGORIJA_ID+"="+k.getId();
+                        }
+                        filtriranaLista.addAll(filtriranaLista.size()-1,dbTasks.ucitajKvizoveBaze(where,null));
+                        adapter.notifyDataSetChanged();
+                    }
+                    else{
+                        ucitajKvizoveKategorijeFirestore();
+                    }
                 }
             }
 
@@ -140,10 +163,8 @@ public class KvizoviAkt extends AppCompatActivity {
             Log.e("NETWORK", intent.getAction());
             if ("android.net.conn.CONNECTIVITY_CHANGE".equals(intent.getAction())) {
                 if (status == Konekcija.TYPE_NOT_CONNECTED) {
-                    //todo
                     Log.e("NETWORK", "NEMA INTERNETA");
                 } else {
-                    //todo
                     ucitajSve();
                     Log.e("NETWORK", "IMA INTERNETA");
 
@@ -157,12 +178,12 @@ public class KvizoviAkt extends AppCompatActivity {
             try {
                 ucitajSveFirestore();
             } catch (JSONException e) {
-                e.printStackTrace();
+
             }
         }
         else{
             Log.e("NETWORK", "IZ BAZE UCITATI");
-            //todo uraditi citanje
+            ucitajSveLokalno();
         }
     }
 
@@ -342,12 +363,7 @@ public class KvizoviAkt extends AppCompatActivity {
                 }
             }
         }
-        for (int i = 0; i < kategorije.size(); i++) {
-            if (!kategorije.get(i).getNaziv().equals("Svi")) {
-                kategorije.remove(i);
-                i--;
-            }
-        }
+        resetujKategorije();
         TaskKat task = new TaskKat("Kategorije", "GET", false, "", getResources());
         task.execute();
     }
@@ -598,8 +614,39 @@ public class KvizoviAkt extends AppCompatActivity {
         return false;
     }
 
+    public void ucitajSveLokalno(){
+        resetujKategorije();
+        kategorije.addAll(dbTasks.ucitajKategorijeBaze(null,null));
+        adapterSp.notifyDataSetChanged();
+        pitanja.clear();
+        pitanja.addAll(dbTasks.ucitajPitanjaBaze(null,null));
+
+        resetujListu(filtriranaLista);
+        spPostojeceKategorije.setSelection(0);
+        Kategorija k = (Kategorija) spPostojeceKategorije.getSelectedItem();
+        String where=null;
+        for(Kategorija ka: kategorije) {
+            Log.d("KATEGORIJE",ka.toString());
+        }
+        if (!k.getNaziv().equals("Svi")) {
+            where=KvizoviDBOpenHelper.KVIZ_KATEGORIJA_ID+"="+k.getId();
+        }
+        ArrayList<Kviz> kv=dbTasks.ucitajKvizoveBaze(where,null);
+        for(Kviz ka: kv) {
+            Log.d("KVIZOVI",ka.toString());
+        }
+        filtriranaLista.addAll(filtriranaLista.size()-1,kv);
+    }
 
 
+    public void resetujKategorije(){
+        for (int i = 0; i < kategorije.size(); i++) {
+            if (!kategorije.get(i).getNaziv().equals("Svi")) {
+                kategorije.remove(i);
+                i--;
+            }
+        }
+    }
 
     public void napraviAlert(String naslov,String poruka){
         new AlertDialog.Builder(this)

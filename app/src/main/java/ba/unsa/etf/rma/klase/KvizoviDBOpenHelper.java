@@ -29,6 +29,11 @@ public class KvizoviDBOpenHelper extends SQLiteOpenHelper {
     public static final String RANGLISTA_PROCENAT = "procenat" ;
     public static final String RANGLISTA_IME_IGRACA = "ime_igraca" ;
 
+    public static final String[] KOLONE_REZULTAT_KVIZ= new String[]{KVIZ_ID,KVIZ_NAZIV,KVIZ_KATEGORIJA_ID,KVIZ_PITANJA};
+    public static final String[] KOLONE_REZULTAT_PITANJE= new String[]{PITANJE_NAZIV,PITANJE_INDEX_TACNOG,PITANJE_ODGOVORI};
+    public static final String[] KOLONE_REZULTAT_KATEGORIJA= new String[]{KATEGORIJA_ID,KATEGORIJA_NAZIV};
+    public static final String[] KOLONE_REZULTAT_RANGLISTA=new String[]{RANGLISTA_ID,RANGLISTA_NAZIV_KVIZA,RANGLISTA_IME_IGRACA,RANGLISTA_PROCENAT};
+
     private static final String CREATE_KVIZOVI = "create table " +
             KVIZOVI_TABLE + " (" + KVIZ_ID +
             " integer primary key, " +
@@ -46,7 +51,8 @@ public class KvizoviDBOpenHelper extends SQLiteOpenHelper {
             KATEGORIJA_NAZIV +" text not null);";
 
     private static final String CREATE_RANGLISTE="create table "+
-            RANGLISTE_TABLE +" ("+RANGLISTA_ID+" text primary key, "+ RANGLISTA_NAZIV_KVIZA +" text not null, "+
+            RANGLISTE_TABLE +" ("+RANGLISTA_ID+" text primary key, "+
+            RANGLISTA_NAZIV_KVIZA +" text not null, "+
             RANGLISTA_IME_IGRACA+" text not null, "+
             RANGLISTA_PROCENAT+" real not null);";
 

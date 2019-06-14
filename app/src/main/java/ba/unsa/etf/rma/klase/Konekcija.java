@@ -26,10 +26,7 @@ public class Konekcija {
     }
 
     public static void nemaKonekcijeToast(Context context){
-        Toast toast=new Toast(context);
-        toast.setText("Nema Internet konekcije");
-        toast.setDuration(Toast.LENGTH_SHORT);
-        toast.show();
+        Toast.makeText(context,"Nema Internet konekcije", Toast.LENGTH_SHORT).show();
     }
 
 }

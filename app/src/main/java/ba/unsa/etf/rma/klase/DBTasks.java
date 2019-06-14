@@ -1,12 +1,15 @@
 package ba.unsa.etf.rma.klase;
 
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 
 public class DBTasks {
@@ -27,7 +30,7 @@ public class DBTasks {
     }
 
 
-    public void patchKviz(String id, String naziv, String kategorija, String pitanja){
+    private void patchKviz(String id, String naziv, String kategorija, String pitanja){
         final String sql="INSERT OR REPLACE INTO "+
                 KvizoviDBOpenHelper.KVIZOVI_TABLE +
                 "("+ KvizoviDBOpenHelper.KVIZ_ID+
@@ -39,7 +42,7 @@ public class DBTasks {
         db.execSQL(sql);
     }
 
-    public void patchKategoriju(String id, String naziv){
+    private void patchKategoriju(String id, String naziv){
         final String sql="INSERT OR REPLACE INTO "+
                 KvizoviDBOpenHelper.KATEGORIJE_TABLE +
                 "("+ KvizoviDBOpenHelper.KATEGORIJA_ID+
@@ -49,7 +52,7 @@ public class DBTasks {
         db.execSQL(sql);
     }
 
-    public void patchPitanje(String naziv, String indeksTacnog, String odgovori){
+    private void patchPitanje(String naziv, String indeksTacnog, String odgovori){
         final String sql="INSERT OR REPLACE INTO "+
                 KvizoviDBOpenHelper.PITANJA_TABLE +
                 "("+ KvizoviDBOpenHelper.PITANJE_NAZIV+
@@ -59,7 +62,7 @@ public class DBTasks {
         db.execSQL(sql);
     }
 
-    public void patchRanglistu(String id, String nazivKviza, String imeIgraca, String procenatTacnih){
+    private void patchRanglistu(String id, String nazivKviza, String imeIgraca, String procenatTacnih){
         final String sql="INSERT OR REPLACE INTO "+
                 KvizoviDBOpenHelper.RANGLISTE_TABLE +
                 "("+ KvizoviDBOpenHelper.RANGLISTA_ID+
@@ -265,6 +268,103 @@ public class DBTasks {
         }
         TaskPost task = new TaskPost("Rangliste", "GET", false, "", res);
         task.execute();
+    }
+
+    public ArrayList<Kviz> ucitajKvizoveBaze(String whereClause, String[] whereArgs){
+        ArrayList<Kviz> kvizovi=new ArrayList<>();
+
+        Cursor cursor= db.query(KvizoviDBOpenHelper.KVIZOVI_TABLE,KvizoviDBOpenHelper.KOLONE_REZULTAT_KVIZ,whereClause,whereArgs,null,null,null);
+        int indeksId=cursor.getColumnIndexOrThrow(KvizoviDBOpenHelper.KVIZ_ID);
+        int indeksNaziv=cursor.getColumnIndexOrThrow(KvizoviDBOpenHelper.KVIZ_NAZIV);
+        int indeksKatId=cursor.getColumnIndexOrThrow(KvizoviDBOpenHelper.KVIZ_KATEGORIJA_ID);
+        int indeksPit=cursor.getColumnIndexOrThrow(KvizoviDBOpenHelper.KVIZ_PITANJA);
+
+        while(cursor.moveToNext()){
+            int katId=cursor.getInt(indeksKatId);
+            ArrayList<Kategorija> kategorije=ucitajKategorijeBaze(KvizoviDBOpenHelper.KATEGORIJA_ID+"="+Integer.valueOf(katId).toString(),null);
+
+            String[] niz=stringToArray(cursor.getString(indeksPit));
+
+            StringBuilder where=new StringBuilder();
+            int len=niz.length;
+            for(int i=0; i<len;i++){
+                where.append(KvizoviDBOpenHelper.PITANJE_NAZIV).append("=").append(convertToSQLString(niz[i]));
+                if(i!=len-1){
+                   where.append(" OR ");
+                }
+            }
+
+            ArrayList<Pitanje> pitanja=ucitajPitanjaBaze(where.toString(),null);
+
+            kvizovi.add(new Kviz(cursor.getString(indeksNaziv),kategorije.get(0),pitanja));
+        }
+
+        cursor.close();
+
+        return kvizovi;
+    }
+
+    public ArrayList<Pitanje> ucitajPitanjaBaze(String whereClause, String[] whereArgs){
+        ArrayList<Pitanje> pitanja=new ArrayList<>();
+
+        Cursor cursor= db.query(KvizoviDBOpenHelper.PITANJA_TABLE,KvizoviDBOpenHelper.KOLONE_REZULTAT_PITANJE,whereClause,whereArgs,null,null,null);
+        int indeksNaziv=cursor.getColumnIndexOrThrow(KvizoviDBOpenHelper.PITANJE_NAZIV);
+        int indeksIT=cursor.getColumnIndexOrThrow(KvizoviDBOpenHelper.PITANJE_INDEX_TACNOG);
+        int indeksOdg=cursor.getColumnIndexOrThrow(KvizoviDBOpenHelper.PITANJE_ODGOVORI);
+
+        while(cursor.moveToNext()){
+
+            String tacan="";
+            int indeksTacnog=cursor.getInt(indeksIT);
+            String[] niz=stringToArray(cursor.getString(indeksOdg));
+            ArrayList<String> odgovori=new ArrayList<>();
+            for(int i=0;i<niz.length;i++){
+                if(indeksTacnog==i){
+                    tacan=niz[i];
+                }
+                odgovori.add(niz[i]);
+            }
+            pitanja.add(new Pitanje(cursor.getString(indeksNaziv),cursor.getString(indeksNaziv),odgovori,tacan));
+        }
+
+        cursor.close();
+
+        return pitanja;
+    }
+
+    public ArrayList<Kategorija> ucitajKategorijeBaze(String whereClause, String[] whereArgs){
+        ArrayList<Kategorija> kategorije=new ArrayList<>();
+
+       Cursor cursor= db.query(KvizoviDBOpenHelper.KATEGORIJE_TABLE,KvizoviDBOpenHelper.KOLONE_REZULTAT_KATEGORIJA,whereClause,whereArgs,null,null,null);
+        int indeksId=cursor.getColumnIndexOrThrow(KvizoviDBOpenHelper.KATEGORIJA_ID);
+        int indeksNaziv=cursor.getColumnIndexOrThrow(KvizoviDBOpenHelper.KATEGORIJA_NAZIV);
+
+        while(cursor.moveToNext()){
+            kategorije.add(new Kategorija(cursor.getString(indeksNaziv),cursor.getString(indeksId)));
+        }
+
+        cursor.close();
+        return kategorije;
+    }
+
+
+
+    public ArrayList<HighScore> ucitajRanglisteBaze(String whereClause, String[] whereArgs){
+        ArrayList<HighScore> highScores=new ArrayList<>();
+
+        Cursor cursor= db.query(KvizoviDBOpenHelper.RANGLISTE_TABLE,KvizoviDBOpenHelper.KOLONE_REZULTAT_RANGLISTA,whereClause,whereArgs,null,null,null);
+        int indeksId=cursor.getColumnIndexOrThrow(KvizoviDBOpenHelper.RANGLISTA_ID);
+        int indeksKviz=cursor.getColumnIndexOrThrow(KvizoviDBOpenHelper.RANGLISTA_NAZIV_KVIZA);
+        int indeksIgrac=cursor.getColumnIndexOrThrow(KvizoviDBOpenHelper.RANGLISTA_IME_IGRACA);
+        int indeksProc=cursor.getColumnIndexOrThrow(KvizoviDBOpenHelper.RANGLISTA_PROCENAT);
+
+        while(cursor.moveToNext()){
+            highScores.add(new HighScore(cursor.getDouble(indeksProc),cursor.getString(indeksIgrac),cursor.getString(indeksKviz)));
+        }
+
+        cursor.close();
+
+        return highScores;
     }
 
     private String convertToSQLString(String s){
