@@ -185,7 +185,9 @@ public class KvizoviAkt extends AppCompatActivity {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        ucitajSve();
+        if(Konekcija.dajStatusKonekcije(getApplicationContext())!=Konekcija.TYPE_NOT_CONNECTED) {
+            dbTasks.azurirajSveUBazi();
+        }
         if (requestCode == 1) {
             Bundle bundle = data.getExtras();
 
