@@ -3,7 +3,6 @@ package ba.unsa.etf.rma.aktivnosti;
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -33,6 +32,7 @@ import java.util.ArrayList;
 import ba.unsa.etf.rma.R;
 import ba.unsa.etf.rma.klase.BazaTask;
 import ba.unsa.etf.rma.klase.DBTasks;
+import ba.unsa.etf.rma.klase.HighScore;
 import ba.unsa.etf.rma.klase.Kategorija;
 import ba.unsa.etf.rma.klase.Konekcija;
 import ba.unsa.etf.rma.klase.Kviz;
@@ -51,7 +51,6 @@ public class KvizoviAkt extends AppCompatActivity {
     private ArrayList<Kategorija> kategorije;
 
     private ArrayList<Pitanje> pitanja;
-    private ArrayList<String> odgovori;
 
     private SQLiteDatabase db;
     private KvizoviDBOpenHelper dbOpenHelper;
@@ -162,6 +161,7 @@ public class KvizoviAkt extends AppCompatActivity {
             Log.e("NETWORK", intent.getAction());
             if ("android.net.conn.CONNECTIVITY_CHANGE".equals(intent.getAction())) {
                 if(Konekcija.dajStatusKonekcije(getApplicationContext())!=Konekcija.TYPE_NOT_CONNECTED) {
+                    azurirajRanglisteFirebasea();
                     dbTasks.azurirajSveUBazi();
                 }
                 ucitajSve();
@@ -637,6 +637,79 @@ public class KvizoviAkt extends AppCompatActivity {
                 i--;
             }
         }
+    }
+
+    public void azurirajRanglisteFirebasea(){
+        class TaskPost extends BazaTask {
+
+            public TaskPost(String kolekcija, String method, Boolean output, String document, Resources res) {
+                super(kolekcija, method, output, document, res);
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                try {
+                    String odgovor = this.getOdgovor();
+                    JSONObject object = new JSONObject(odgovor);
+                    JSONArray documents = object.getJSONArray("documents");
+                    if(documents.length()<HighScore.brojHighScoreova){
+
+
+                        StringBuilder where=new StringBuilder();
+                        for(Integer i=documents.length(); i<=HighScore.brojHighScoreova;i++){
+                            where.append(KvizoviDBOpenHelper.RANGLISTA_ID).append("=").append(Integer.valueOf(i-1).toString());
+                            if(i!=HighScore.brojHighScoreova){
+                                where.append(" OR ");
+                            }
+                        }
+                        ArrayList<HighScore> hs=dbTasks.ucitajRanglisteBaze(where.toString(),null);
+                        Integer brojac=0;
+                        for(Integer i=documents.length(); i<=HighScore.brojHighScoreova;i++){
+                            posaljiRanglistu(hs.get(brojac),i-1);
+                            brojac++;
+                        }
+                    }
+
+                }
+                catch (JSONException e){
+
+                }
+            }
+        }
+        TaskPost task = new TaskPost("Rangliste", "GET", false, "", getResources());
+        task.execute();
+    }
+
+    public void posaljiRanglistu(HighScore highScore,Integer id){
+        try {
+            JSONObject jo = new JSONObject();
+            JSONObject fields = new JSONObject();
+            JSONObject fields2 = new JSONObject();
+            JSONObject fields3 = new JSONObject();
+            JSONObject mapValue = new JSONObject();
+            JSONObject mapValue2 = new JSONObject();
+            JSONObject pozicija = new JSONObject();
+            JSONObject lista = new JSONObject();
+            JSONObject nazivKviza = new JSONObject();
+
+            JSONObject imeIgraca = new JSONObject();
+            imeIgraca.put("doubleValue", highScore.getProcenatTacnih() + "");
+            fields3.put(highScore.getImeIgraca(),imeIgraca);
+            mapValue2.put("fields",fields3);
+            pozicija.put("mapValue",mapValue2);
+            fields2.put("pozicija",pozicija);
+            mapValue.put("fields",fields2);
+            lista.put("mapValue",mapValue);
+            fields.put("lista",lista);
+            nazivKviza.put("stringValue",highScore.getImeKviza());
+            fields.put("nazivKviza",nazivKviza);
+            jo.put("fields",fields);
+            new BazaTask("Rangliste/"+id,"PATCH",true,jo.toString(),getResources()).execute();
+
+        }catch (JSONException e){
+
+        }
+
     }
 
     public void napraviAlert(String naslov,String poruka){

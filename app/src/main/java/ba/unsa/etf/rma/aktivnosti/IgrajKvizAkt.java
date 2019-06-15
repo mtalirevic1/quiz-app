@@ -106,7 +106,9 @@ public class IgrajKvizAkt extends AppCompatActivity implements InformacijeFrag.O
                     String where=KvizoviDBOpenHelper.RANGLISTA_NAZIV_KVIZA+"="+dbTasks.convertToSQLString(kviz.getNaziv());
                     ArrayList<HighScore> hs=dbTasks.ucitajRanglisteBaze(where,null);
                     highScores.addAll(hs);
-                    highScores.add(new HighScore(procenat,ime,kviz.getNaziv()));
+                    HighScore highScore=new HighScore(procenat*100,ime,kviz.getNaziv());
+                    highScores.add(highScore);
+                    dbTasks.patchRanglistu(HighScore.brojHighScoreova+"",dbTasks.convertToSQLString(highScore.getImeKviza()),dbTasks.convertToSQLString(highScore.getImeIgraca()),highScore.getProcenatTacnih()+"");
                     pokreniRangListaFrag();
                     HighScore.brojHighScoreova+=1;
                 }

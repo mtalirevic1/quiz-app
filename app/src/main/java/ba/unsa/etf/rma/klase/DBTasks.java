@@ -30,7 +30,7 @@ public class DBTasks {
     }
 
 
-    private void patchKviz(String id, String naziv, String kategorija, String pitanja){
+    public void patchKviz(String id, String naziv, String kategorija, String pitanja){
         final String sql="INSERT OR REPLACE INTO "+
                 KvizoviDBOpenHelper.KVIZOVI_TABLE +
                 "("+ KvizoviDBOpenHelper.KVIZ_ID+
@@ -42,7 +42,7 @@ public class DBTasks {
         db.execSQL(sql);
     }
 
-    private void patchKategoriju(String id, String naziv){
+    public void patchKategoriju(String id, String naziv){
         final String sql="INSERT OR REPLACE INTO "+
                 KvizoviDBOpenHelper.KATEGORIJE_TABLE +
                 "("+ KvizoviDBOpenHelper.KATEGORIJA_ID+
@@ -52,7 +52,7 @@ public class DBTasks {
         db.execSQL(sql);
     }
 
-    private void patchPitanje(String naziv, String indeksTacnog, String odgovori){
+    public void patchPitanje(String naziv, String indeksTacnog, String odgovori){
         final String sql="INSERT OR REPLACE INTO "+
                 KvizoviDBOpenHelper.PITANJA_TABLE +
                 "("+ KvizoviDBOpenHelper.PITANJE_NAZIV+
@@ -62,7 +62,7 @@ public class DBTasks {
         db.execSQL(sql);
     }
 
-    private void patchRanglistu(String id, String nazivKviza, String imeIgraca, String procenatTacnih){
+    public void patchRanglistu(String id, String nazivKviza, String imeIgraca, String procenatTacnih){
         final String sql="INSERT OR REPLACE INTO "+
                 KvizoviDBOpenHelper.RANGLISTE_TABLE +
                 "("+ KvizoviDBOpenHelper.RANGLISTA_ID+
